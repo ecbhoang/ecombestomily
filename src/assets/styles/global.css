@@ -1,0 +1,45 @@
+:root {
+  --primary-color: #0077c9;
+  --secondary-color: #f5a623;
+  --tertiary-color: #28a745;
+  --eb-white-color: #f3f3f3;
+  --disable-color: gray;
+  --default-color: #f3f3f3;
+  --box-shadow-ot1-color: #3c40434d;
+  --box-shadow-ot2-color: #3c404326;
+  --black-color: black;
+  --black-op06-color: rgba(0, 0, 0, 0.6);
+  --transparent-color: transparent;
+  --light-transparent-color: #00000006;
+  --alert-color: red;
+  --primary-hover-color: #0079c99a;
+}
+
+#root {
+  margin: auto;
+  max-width: 30%;
+}
+
+.eb-text--center {
+  text-align: center;
+}
+
+.eb-text--left {
+  text-align: left;
+}
+
+.eb-text--right {
+  text-align: right;
+}
+
+.eb-text--required {
+  color: var(--alert-color);
+  margin-left: 5px;
+  text-align: left;
+}
+
+.eb-text--alert {
+  color: var(--alert-color);
+  margin-left: 6px;
+  text-align: left;
+}
