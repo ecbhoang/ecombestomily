@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
-import "./EbTextInput.css";
+import './EbTextInput.css';
 
 function EbTextInput(props) {
   const { data, onSelectionChange, value } = props;
-  const [inputValue, setInputvalue] = useState(value ?? "");
+  const [inputValue, setInputValue] = useState(value ?? '');
   const [inputCounter, setInputCounter] = useState(0);
 
   const uuid_input = uuidv4();
@@ -13,7 +13,7 @@ function EbTextInput(props) {
   const handleChange = (e) => {
     if (data.max_length >= e.target.value.length) {
       setInputCounter(e.target.value.length);
-      setInputvalue(e.target.value);
+      setInputValue(e.target.value);
       if (onSelectionChange) onSelectionChange(e.target.value);
     }
   };
@@ -34,7 +34,7 @@ function EbTextInput(props) {
       <div className="eb-text-input--body">
         {data.is_textarea ? (
           <textarea
-            type={data.functions[0]?.type ?? "text"}
+            type={data.functions[0]?.type ?? 'text'}
             id={uuid_input}
             placeholder={data.help_text ? data.help_text : null}
             className="eb-text-input--item"
@@ -43,7 +43,7 @@ function EbTextInput(props) {
           ></textarea>
         ) : (
           <input
-            type={data.functions[0]?.type ?? "text"}
+            type={data.functions[0]?.type ?? 'text'}
             id={uuid_input}
             placeholder={data.help_text ? data.help_text : null}
             className="eb-text-input--item"
@@ -52,6 +52,9 @@ function EbTextInput(props) {
           />
         )}
       </div>
+      <p className="eb-text-input--help_text">
+        {data.help_text ? data.help_text : null}
+      </p>
     </div>
   ) : null;
 }

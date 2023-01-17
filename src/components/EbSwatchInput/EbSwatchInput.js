@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import "./EbSwatchInput.css";
+import React, { useState } from 'react';
+import './EbSwatchInput.css';
 
-function SquareSelector(props) {
+function EbSwatchInput(props) {
   const { data, onSelectionChange, selectedId } = props;
   const [selected, setSelected] = useState(
     data.values.find((o) => (selectedId ? o.id === selectedId : o.selected))
@@ -29,7 +29,7 @@ function SquareSelector(props) {
               key={item.id}
               onClick={() => handleClick(item)}
               className={`eb-swatch-input--option ${
-                selected.id === item.id ? "selected" : ""
+                selected.id === item.id ? 'selected' : ''
               }`}
             >
               <img src={item.thumb_image} alt={`Square ${item.id}`} />
@@ -44,4 +44,4 @@ function SquareSelector(props) {
   ) : null;
 }
 
-export default SquareSelector;
+export default EbSwatchInput;
