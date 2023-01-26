@@ -32,7 +32,7 @@ function SquareSelector(props) {
                 selected.id === item.id ? "selected" : ""
               }`}
             >
-              <img src={item.thumb_image} alt={`Square ${item.id}`} />
+              <img src={item.thumb_image} alt={`item ${item.id}`} />
             </div>
           );
         })}

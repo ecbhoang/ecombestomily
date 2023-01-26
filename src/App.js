@@ -6,6 +6,7 @@ import EbTextInput from "./components/EbTextInput/EbTextInput";
 import EbSwatchInput from "./components/EbSwatchInput/EbSwatchInput";
 
 function App() {
+  console.log(sampleData.length);
   return (
     <div className="App">
       {sampleData.map((input) => {
@@ -27,8 +28,8 @@ function App() {
                 // value={input.help_text}
               />
             );
-
           default:
+            console.log(input.type);
             return null;
         }
       })}
