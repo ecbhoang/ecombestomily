@@ -8,7 +8,7 @@ function EbSwatchInput(props) {
   );
 
   const handleClick = (item) => {
-    if (item.id !== selected.id) {
+    if (!selected || item.id !== selected.id) {
       data.values.forEach((s) => (s.selected = s.id === item.id));
       setSelected(item);
       if (onSelectionChange) {
