@@ -10,3 +10,7 @@ export function ebDebounce(fn, delay) {
     }, delay);
   };
 }
+
+export function ebParseInt(params) {
+  return 1 * params;
+}

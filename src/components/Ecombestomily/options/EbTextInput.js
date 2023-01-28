@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-
-import "./EbTextInput.css";
+import EbOptionLabel from "./EbOptionLabel";
 
 function EbTextInput(props) {
   const { data, onSelectionChange, value } = props;
-  const [inputValue, setInputvalue] = useState(value ?? "");
+  const [inputValue, setInputValue] = useState(value ?? "");
   const [inputCounter, setInputCounter] = useState(0);
 
   const uuid_input = uuidv4();
@@ -14,25 +13,21 @@ function EbTextInput(props) {
     //should be in debounce mode
     if (data.max_length >= e.target.value.length) {
       setInputCounter(e.target.value.length);
-      setInputvalue(e.target.value);
+      setInputValue(e.target.value);
       if (onSelectionChange) onSelectionChange(e.target.value);
     }
   };
 
   return data && !data.hide_visually ? (
-    <div className="eb-text-input--wrapper">
-      <div className="eb-text-input--label">
-        <label htmlFor={uuid_input} className="eb-text--left">
-          {data.label ? data.label : null}
-        </label>
-        {data.max_length ? (
-          <p className="eb-text-input--max_length">
-            {`(${inputCounter}|${data.max_length})`}
-          </p>
-        ) : null}
-        {data.required ? <p className="eb-text--required">*</p> : null}
-      </div>
-      <div className="eb-text-input--body">
+    <div className="eb-option-input--wrapper">
+      <EbOptionLabel
+        label={data.label}
+        isRequired={data.required}
+        maxChar={data.max_length}
+        currentChar={inputCounter}
+        uuid_input={uuid_input}
+      />
+      <div className="eb-option-input--body">
         {data.is_textarea ? (
           <textarea
             type={data.functions[0]?.type ?? "text"}
@@ -55,9 +50,9 @@ function EbTextInput(props) {
           />
         )}
       </div>
-      <p className="eb-text-input--help_text">
-        {data.help_text ? data.help_text : null}
-      </p>
+      {data.help_text ? (
+        <p className="eb-option-input--help_text">{data.help_text}</p>
+      ) : null}
     </div>
   ) : null;
 }
