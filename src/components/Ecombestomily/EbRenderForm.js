@@ -6,6 +6,7 @@ import EbSwatchInput from "./options/EbSwatchInput";
 import EbTextInput from "./options/EbTextInput";
 import { ebParseInt } from "../../assets/scripts/helpers";
 import "./EbRenderForm.css";
+import EbImageUploadInput from "./options/EbImageUploadInput";
 
 function EbRenderForm(props) {
   console.log("props", props);
@@ -122,9 +123,9 @@ function EbRenderForm(props) {
   return (
     <div className="Ecombestomily">
       {setsData.map((input) => {
-        const { id, type, hide_visually } = input;
-        if (hide_visually) {
-          // console.log(input.label, "----HIDDDEN----");
+        const { id, type, hide_visually, values } = input;
+        if (hide_visually || (values && values.length < 2)) {
+          //hide option that only 1 value for setecting and hide_visually is True
           return null;
         }
 
@@ -156,16 +157,16 @@ function EbRenderForm(props) {
                 data={input}
               />
             );
-          // case "Image Upload":
-          //   return (
-          //     <EbImageUploadInput
-          //       key={id || uuidv4()}
-          //       name={id}
-          //       onSelectionChange={(item) => console.log(item)}
-          //       data={input}
-          //       value={id}
-          //     />
-          //   );
+          case "Image Upload":
+            return (
+              <EbImageUploadInput
+                key={id || uuidv4()}
+                name={id}
+                onSelectionChange={(item) => console.log(item)}
+                data={input}
+                showPreview={false}
+              />
+            );
 
           default:
             return null;

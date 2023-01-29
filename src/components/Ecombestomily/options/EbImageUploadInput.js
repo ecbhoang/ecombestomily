@@ -17,7 +17,6 @@ function EbImageUploadInput(props) {
     if (!e) {
       setSelectedImage(null);
     } else {
-      console.log(e);
       encodeImageFileAsURL(e.target.files[0]);
     }
   }
@@ -45,21 +44,43 @@ function EbImageUploadInput(props) {
           className="eb-btn-upload-image"
           onClick={handleClickSelectImage}
         >
-          Select Image
+          {selectedImage ? "Change Image" : "Select Image"}
         </button>
-        <button
-          onClick={() => {
-            onChangeHandler(null);
-          }}
-          className="eb-unload-input-image"
-        >
-          X
-        </button>
-        {showPreview ? <img src={selectedImage} alt="" /> : null}
+        {selectedImage ? (
+          !showPreview ? (
+            <button
+              title="Remove this image"
+              onClick={() => {
+                onChangeHandler(null);
+              }}
+              className="eb-unload-input-image-fullsize"
+            >
+              × Remove Image
+            </button>
+          ) : (
+            <div className="eb-upload-input--image-container">
+              <button
+                title="Remove this image"
+                onClick={() => {
+                  onChangeHandler(null);
+                }}
+                className="eb-unload-input-image-hover"
+              >
+                ×
+              </button>
+              <img
+                title="Change image"
+                onClick={handleClickSelectImage}
+                src={selectedImage}
+                alt="upload-preview"
+              />
+            </div>
+          )
+        ) : null}
+        {data.help_text ? (
+          <p className="eb-option-input--help_text">{data.help_text}</p>
+        ) : null}
       </div>
-      {data.help_text ? (
-        <p className="eb-option-input--help_text">{data.help_text}</p>
-      ) : null}
     </div>
   ) : null;
 }
