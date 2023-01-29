@@ -8,7 +8,9 @@ import { ebParseInt } from "../../assets/scripts/helpers";
 import "./EbRenderForm.css";
 
 function EbRenderForm(props) {
+  console.log("props", props);
   const { sets } = props;
+  sets.sort((a, b) => a.sort_id - b.sort_id);
   const watchGroup = groupOptionByWatchId(sets);
   const [state, setState] = useState({
     setsData: sets,
@@ -22,7 +24,7 @@ function EbRenderForm(props) {
       formData: formDataInit,
       setsData: updatedSetsData,
     });
-  }, []);
+  }, [sets]);
 
   const { setsData, formData } = state;
 
@@ -122,7 +124,7 @@ function EbRenderForm(props) {
       {setsData.map((input) => {
         const { id, type, hide_visually } = input;
         if (hide_visually) {
-          console.log(input.label, "----HIDDDEN----");
+          // console.log(input.label, "----HIDDDEN----");
           return null;
         }
 
