@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import EbOptionLabel from "./EbOptionLabel";
+import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import EbOptionLabel from './EbOptionLabel';
 
 function EbDropDownInput(props) {
   const { data, onSelectionChange, selectedId } = props;
@@ -17,7 +17,11 @@ function EbDropDownInput(props) {
 
   return data && !data.hide_visually ? (
     <div className="eb-option-input--wrapper">
-      <EbOptionLabel label={data.label} isRequired={data.required} />
+      <EbOptionLabel
+        id={data.id}
+        label={data.label}
+        isRequired={data.required}
+      />
 
       <div className="eb-option-input--body">
         <select

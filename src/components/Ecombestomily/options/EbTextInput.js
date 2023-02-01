@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import EbOptionLabel from "./EbOptionLabel";
+import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import EbOptionLabel from './EbOptionLabel';
 
 function EbTextInput(props) {
   const { data, onSelectionChange, value } = props;
-  const [inputValue, setInputValue] = useState(value ?? "");
+  const [inputValue, setInputValue] = useState(value ?? '');
   const [inputCounter, setInputCounter] = useState(0);
 
   const uuid_input = uuidv4();
@@ -21,6 +21,7 @@ function EbTextInput(props) {
   return data && !data.hide_visually ? (
     <div className="eb-option-input--wrapper">
       <EbOptionLabel
+        id={data.id}
         label={data.label}
         isRequired={data.required}
         maxChar={data.max_length}
@@ -30,7 +31,7 @@ function EbTextInput(props) {
       <div className="eb-option-input--body">
         {data.is_textarea ? (
           <textarea
-            type={data.functions[0]?.type ?? "text"}
+            type={data.functions[0]?.type ?? 'text'}
             id={uuid_input}
             placeholder={data.placeholder ?? null}
             className="eb-text-input--item"
@@ -41,7 +42,7 @@ function EbTextInput(props) {
           ></textarea>
         ) : (
           <input
-            type={data.functions[0]?.type ?? "text"}
+            type={data.functions[0]?.type ?? 'text'}
             id={uuid_input}
             placeholder={data.placeholder ? data.placeholder : null}
             className="eb-text-input--item"

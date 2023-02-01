@@ -1,0 +1,260 @@
+[
+  {
+    "id": 3,
+    "type": "Swatch",
+    "label": "Choose Child's Hair Color #1",
+    "isMain": true,
+    "values": [
+      {
+        "id": 54011,
+        "value": "Black",
+        "sort_id": 1,
+        "tooltip": "Black",
+        "bg_color": "#000000",
+        "selected": true,
+        "thumb_image": null,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54013,
+        "value": "Blonde",
+        "sort_id": 2,
+        "tooltip": "Blonde",
+        "bg_color": "#E7B367",
+        "selected": false,
+        "thumb_image": null,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54014,
+        "value": "Brown",
+        "sort_id": 3,
+        "tooltip": "Brown",
+        "bg_color": "#5C432F",
+        "selected": false,
+        "thumb_image": null,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54015,
+        "value": "Red",
+        "sort_id": 4,
+        "tooltip": "Red",
+        "bg_color": "#903D47",
+        "selected": false,
+        "thumb_image": null,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54016,
+        "value": "Salt & Pepper",
+        "sort_id": 5,
+        "tooltip": "Salt & Pepper",
+        "bg_color": "#716861",
+        "selected": false,
+        "thumb_image": null,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54018,
+        "value": "Silver",
+        "sort_id": 6,
+        "tooltip": "Silver",
+        "bg_color": "#E4E4E4",
+        "selected": false,
+        "thumb_image": null,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54007,
+        "value": "Bald Hair",
+        "sort_id": 7,
+        "tooltip": "",
+        "selected": false,
+        "thumb_image": "https://cdn.customily.com/shopify/assetFiles/swatches/great-family-shop.myshopify.com/39be29d7-5ae8-407b-95da-57a37e272742/3/feade056-0c21-4dbd-8a85-06650cd77c8c.jpg"
+      }
+    ],
+    "sort_id": 33,
+    "required": true,
+    "functions": [],
+    "libraryId": 81377,
+    "conditions": [
+      {
+        "id": 1,
+        "action": "show",
+        "watch_option": 2,
+        "desired_value": 1
+      },
+      {
+        "id": 2,
+        "action": "show",
+        "watch_option": 2,
+        "desired_value": 2,
+        "combination_operator": "or"
+      },
+      {
+        "id": 3,
+        "action": "show",
+        "watch_option": 2,
+        "desired_value": 4,
+        "combination_operator": "or"
+      },
+      {
+        "id": 4,
+        "action": "show",
+        "watch_option": 2,
+        "desired_value": 3,
+        "combination_operator": "or"
+      }
+    ],
+    "hide_visually": false,
+    "variation_conditions": []
+  },
+  {
+    "id": 39,
+    "type": "Swatch",
+    "label": "Choose Child's Hair Color #1",
+    "isMain": true,
+    "values": [
+      {
+        "id": 54011,
+        "value": "Black",
+        "sort_id": 1,
+        "tooltip": "Black",
+        "bg_color": "#000000",
+        "selected": true,
+        "thumb_image": null,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54013,
+        "value": "Blonde",
+        "sort_id": 2,
+        "tooltip": "Blonde",
+        "bg_color": "#E7B367",
+        "selected": false,
+        "thumb_image": null,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54014,
+        "value": "Brown",
+        "sort_id": 3,
+        "tooltip": "Brown",
+        "bg_color": "#5C432F",
+        "selected": false,
+        "thumb_image": null,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54019,
+        "value": "Copper",
+        "sort_id": 4,
+        "tooltip": "Copper",
+        "bg_color": "#C93C16",
+        "selected": false,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54020,
+        "value": "Navy",
+        "sort_id": 5,
+        "tooltip": "Navy",
+        "bg_color": "#334D87",
+        "selected": false,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54021,
+        "value": "Pink",
+        "sort_id": 6,
+        "tooltip": "Pink",
+        "bg_color": "#DA436B",
+        "selected": false,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54022,
+        "value": "Purple",
+        "sort_id": 7,
+        "tooltip": "Purple",
+        "bg_color": "#4C2E68",
+        "selected": false,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54015,
+        "value": "Red",
+        "sort_id": 8,
+        "tooltip": "Red",
+        "bg_color": "#903D47",
+        "selected": false,
+        "thumb_image": null,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54016,
+        "value": "Salt & Pepper",
+        "sort_id": 9,
+        "tooltip": "Salt & Pepper",
+        "bg_color": "#716861",
+        "selected": false,
+        "thumb_image": null,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54018,
+        "value": "Silver",
+        "sort_id": 10,
+        "tooltip": "Silver",
+        "bg_color": "#E4E4E4",
+        "selected": false,
+        "thumb_image": null,
+        "bg_color_alpha": 1
+      },
+      {
+        "id": 54023,
+        "value": "Bald Hair",
+        "sort_id": 11,
+        "tooltip": "",
+        "selected": false,
+        "thumb_image": "https://cdn.customily.com/shopify/assetFiles/swatches/great-family-shop.myshopify.com/39be29d7-5ae8-407b-95da-57a37e272742/39/03e67457-06b0-4f65-9015-bf89739dc95b.jpg"
+      }
+    ],
+    "sort_id": 51,
+    "required": true,
+    "functions": [],
+    "libraryId": 81377,
+    "conditions": [
+      {
+        "id": 1,
+        "action": "show",
+        "watch_option": 38,
+        "desired_value": 1
+      },
+      {
+        "id": 2,
+        "action": "show",
+        "watch_option": 38,
+        "desired_value": 2,
+        "combination_operator": "or"
+      },
+      {
+        "id": 3,
+        "action": "show",
+        "watch_option": 38,
+        "desired_value": 4,
+        "combination_operator": "or"
+      },
+      {
+        "id": 4,
+        "action": "show",
+        "watch_option": 38,
+        "desired_value": 3,
+        "combination_operator": "or"
+      }
+    ],
+    "hide_visually": false,
+    "variation_conditions": []
+  }
+]

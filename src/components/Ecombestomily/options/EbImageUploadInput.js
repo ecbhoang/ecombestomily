@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
-import EbOptionLabel from "./EbOptionLabel";
+import React, { useState, useEffect, useCallback } from 'react';
+import EbOptionLabel from './EbOptionLabel';
 
 function EbImageUploadInput(props) {
   const { data, onSelectionChange, showPreview } = props;
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleClickSelectImage = useCallback(() => {
-    document.querySelector(".eb-input-image").click();
+    document.querySelector('.eb-input-image').click();
   }, []);
 
   useEffect(() => {
@@ -31,7 +31,11 @@ function EbImageUploadInput(props) {
 
   return !data.hide_visually ? (
     <div className="eb-option-input--wrapper">
-      <EbOptionLabel label={data.label} isRequired={data.required} />
+      <EbOptionLabel
+        id={data.id}
+        label={data.label}
+        isRequired={data.required}
+      />
 
       <div className="eb-option-input--body">
         <input
@@ -44,7 +48,7 @@ function EbImageUploadInput(props) {
           className="eb-btn-upload-image"
           onClick={handleClickSelectImage}
         >
-          {selectedImage ? "Change Image" : "Select Image"}
+          {selectedImage ? 'Change Image' : 'Select Image'}
         </button>
         {selectedImage ? (
           !showPreview ? (

@@ -172,3 +172,19 @@
   object-position: top;
   cursor: pointer;
 }
+
+.eb-checkbox-input--item {
+  min-width: 20px;
+  min-height: 20px;
+  max-width: 20px;
+  max-height: 20px;
+  display: inline-block;
+}
+
+.eb-checkbox-input--label {
+  display: inline-block;
+}
+
+.eb-checkbox-input--label label {
+  margin-left: 8px;
+}

@@ -1,40 +1,71 @@
-import React, { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { useEffect, useState } from 'react';
 
-import EbDropDownInput from "./options/EbDropDownInput";
-import EbSwatchInput from "./options/EbSwatchInput";
-import EbTextInput from "./options/EbTextInput";
-import { ebParseInt } from "../../assets/scripts/helpers";
-import "./EbRenderForm.css";
-import EbImageUploadInput from "./options/EbImageUploadInput";
+import { v4 as uuidv4 } from 'uuid';
+
+import EbDropDownInput from './options/EbDropDownInput';
+import EbSwatchInput from './options/EbSwatchInput';
+import EbTextInput from './options/EbTextInput';
+import './EbRenderForm.css';
+import EbImageUploadInput from './options/EbImageUploadInput';
+import EbCheckBoxInput from './options/EbCheckBoxInput\u001D';
 
 function EbRenderForm(props) {
-  console.log("props", props);
   const { sets } = props;
   sets.sort((a, b) => a.sort_id - b.sort_id);
   const watchGroup = groupOptionByWatchId(sets);
-  const [state, setState] = useState({
-    setsData: sets,
-    formData: {},
-  });
+  console.log('watchGroup', parseObject(watchGroup));
+  const [state, setState] = useState({});
+  const [currentOptionId, setCurrentOptionId] = useState(null);
 
   useEffect(() => {
-    const formDataInit = initFormData(sets);
-    const updatedSetsData = initSetsData(sets, formDataInit);
+    const initData = initSetData(sets);
     setState({
-      formData: formDataInit,
-      setsData: updatedSetsData,
+      setsData: initData,
+      formData: initFormData(sets),
     });
   }, [sets]);
 
-  const { setsData, formData } = state;
+  // Hàm này sẽ filter data gốc và trả về mảng mới bằng cách bỏ những item có hide_visually = true và không có condition
+  // Hàm này sẽ filter data gốc và lấy những item cần render ra theo formData
+  function initSetData(sets) {
+    const formData = initFormData(sets);
+    let renderList = [];
+    sets.forEach((item) => {
+      if (
+        !item.hide_visually &&
+        (!item.conditions || item.conditions.length < 1)
+      ) {
+        renderList.push(item);
+      } else {
+      }
+      if (watchGroup[item.id]) {
+        // handleChange({ optionId: item.id, value: formData[item.id] });
+      }
+    });
+    return renderList;
+  }
+
+  let { setsData, formData } = state;
 
   function handleChange(result) {
     const { optionId, value } = result;
-    const newSetsData = updateSetsData(optionId, value);
+    setsData = setsData.filter((item) => item.renderId !== optionId);
+    watchGroup[optionId]?.forEach((option) => {
+      const isExist = sets.find((set) => set.id === option);
+      if (isExist) {
+        console.log('isExist', isExist);
+        if (
+          checkConditions(isExist.conditions, value, optionId) &&
+          !isExist.hide_visually
+        ) {
+          setsData.push({ ...isExist, renderId: optionId });
+          console.log('>> New Set Data: ', setsData);
+        }
+      }
+    });
+
     setState({
-      ...state,
-      setsData: newSetsData,
+      setsData: setsData,
       formData: {
         ...formData,
         [optionId]: value,
@@ -42,54 +73,22 @@ function EbRenderForm(props) {
     });
   }
 
-  function setHideVisually(whichSets, optionIds, optionValue) {
-    optionIds.forEach((id) => {
-      let searchOption = whichSets.find((option) => option.id === id);
-      let conditions = searchOption.conditions;
-      if (conditions.length) {
-        let mainAction = conditions[0].action;
-        const isMatchedCondition = checkConditions(conditions, optionValue);
-
-        searchOption.hide_visually =
-          (isMatchedCondition && mainAction === "hide") ||
-          (!isMatchedCondition && mainAction === "show");
-      }
-    });
-    return whichSets;
-  }
-
-  function updateSetsData(optionId, optionValue) {
-    let template = [...setsData];
-    if (optionId) {
-      let existedWatch = watchGroup[optionId];
-      if (existedWatch) {
-        template = setHideVisually(template, existedWatch, optionValue);
-      }
-    }
-    return template;
-  }
-
-  function initSetsData(rawSets, formDataInit) {
-    for (const key in watchGroup) {
-      const watchItem = watchGroup[key];
-      let optionValue = formDataInit[key];
-      rawSets = setHideVisually(rawSets, watchItem, optionValue);
-    }
-    return rawSets;
-  }
-
+  // Hàm này lấy ra những id trong data và gán value cho từng type
+  // Trường hợp type là Swatch và Dropdown thì nếu không có selected thì gán bằng null
   function initFormData(data) {
     let templateData = {};
+    console.log('>> Data: ', data);
     data.forEach((item) => {
       let found;
-      if (item.type === "Swatch" || item.type === "Dropdown") {
+      if (item.type === 'Swatch' || item.type === 'Dropdown') {
         found = item.values.find((i) => i.selected === true);
         templateData[item.id] = found ? found.id : null;
-      } else if (item.type === "Text Input") {
-        templateData[item.id] = "abc";
-      } else if (item.type === "Image Upload") {
-        templateData[item.id] = "base64";
-      } else {
+      } else if (item.type === 'Text Input') {
+        templateData[item.id] = 'abc';
+      } else if (item.type === 'Image Upload') {
+        templateData[item.id] = 'base64';
+      } else if (item.type === 'Checkbox') {
+        templateData[item.id] = 'boolean';
       }
     });
     return templateData;
@@ -108,59 +107,80 @@ function EbRenderForm(props) {
     return result;
   }
 
-  function checkConditions(conditions, value) {
+  // Hàm này sẽ check các condition của thằng con có desired_value và watch_option === với value của thằng cha đang chờ onChange hay không?
+  function checkConditions(conditions, value, watchOptionId) {
     let result;
-    value = ebParseInt(value);
+    value = Number(value);
     conditions.forEach((condition) => {
+      const subCondition =
+        value === condition.desired_value &&
+        condition.watch_option === watchOptionId;
       result =
-        condition.combination_operator === "and"
-          ? result && value === condition.desired_value
-          : result || value === condition.desired_value;
+        condition.combination_operator === 'and'
+          ? result && subCondition
+          : result || subCondition;
     });
     return result;
   }
 
+  function parseObject(obj) {
+    const parsed = {};
+    for (const key in obj) {
+      parsed[key] = Array.from(obj[key]);
+    }
+    return parsed;
+  }
+  console.log('formData, ', formData);
+  console.log('setsData', setsData);
+
   return (
     <div className="Ecombestomily">
-      {setsData.map((input) => {
-        const { id, type, hide_visually, values } = input;
-        if (hide_visually || (values && values.length < 2)) {
-          //hide option that only 1 value for setecting and hide_visually is True
-          return null;
-        }
-
+      {setsData?.map((input) => {
+        const { id, type, conditions, hide_visually } = input;
         switch (type) {
-          case "Swatch":
+          case 'Swatch':
             return (
               <EbSwatchInput
-                key={id || uuidv4()}
+                key={uuidv4()}
                 name={id}
                 onSelectionChange={handleChange}
                 data={input}
+                selectedId={formData[input.id]}
               />
             );
-          case "Text Input":
+
+          case 'Checkbox':
+            return (
+              <EbCheckBoxInput
+                key={uuidv4()}
+                name={id}
+                onSelectionClick={(item) => console.log(item)}
+                data={input}
+              />
+            );
+          case 'Text Input':
             return (
               <EbTextInput
-                key={id || uuidv4()}
+                key={uuidv4()}
                 name={id}
                 onSelectionChange={(item) => console.log(item)}
                 data={input}
               />
             );
-          case "Dropdown":
+          case 'Dropdown':
             return (
               <EbDropDownInput
-                key={id || uuidv4()}
+                key={uuidv4()}
                 name={id}
                 onSelectionChange={handleChange}
                 data={input}
+                selectedId={formData[input.id]}
               />
             );
-          case "Image Upload":
+          case 'Image Upload':
             return (
               <EbImageUploadInput
-                key={id || uuidv4()}
+                key={uuidv4()}
                 name={id}
                 onSelectionChange={(item) => console.log(item)}
                 data={input}
