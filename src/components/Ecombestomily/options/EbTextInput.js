@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import EbOptionLabel from './EbOptionLabel';
 
 function EbTextInput(props) {
-  const { data, onSelectionChange, value } = props;
+  const { option, onSelectionChange, value } = props;
   const [inputValue, setInputValue] = useState(value ?? '');
   const [inputCounter, setInputCounter] = useState(0);
 
@@ -11,48 +11,49 @@ function EbTextInput(props) {
 
   const handleChange = (e) => {
     //should be in debounce mode
-    if (data.max_length >= e.target.value.length) {
+    if (option.max_length >= e.target.value.length) {
       setInputCounter(e.target.value.length);
       setInputValue(e.target.value);
-      if (onSelectionChange) onSelectionChange(e.target.value);
+      if (onSelectionChange)
+        onSelectionChange({ optionId: option.id, value: e.target.value });
     }
   };
 
-  return data && !data.hide_visually ? (
+  return option && !option.hide_visually ? (
     <div className="eb-option-input--wrapper">
       <EbOptionLabel
-        id={data.id}
-        label={data.label}
-        isRequired={data.required}
-        maxChar={data.max_length}
+        id={option.id}
+        label={option.label}
+        isRequired={option.required}
+        maxChar={option.max_length}
         currentChar={inputCounter}
         uuid_input={uuid_input}
       />
       <div className="eb-option-input--body">
-        {data.is_textarea ? (
+        {option.is_textarea ? (
           <textarea
-            type={data.functions[0]?.type ?? 'text'}
+            type={option.functions[0]?.type ?? 'text'}
             id={uuid_input}
-            placeholder={data.placeholder ?? null}
+            placeholder={option.placeholder ?? null}
             className="eb-text-input--item"
-            cols={data.cols ?? 10}
-            rows={data.rows ?? 4}
+            cols={option.cols ?? 10}
+            rows={option.rows ?? 4}
             value={inputValue}
             onChange={(e) => handleChange(e.target.value)}
           ></textarea>
         ) : (
           <input
-            type={data.functions[0]?.type ?? 'text'}
+            type={option.functions[0]?.type ?? 'text'}
             id={uuid_input}
-            placeholder={data.placeholder ? data.placeholder : null}
+            placeholder={option.placeholder ? option.placeholder : null}
             className="eb-text-input--item"
             value={inputValue}
             onChange={(e) => handleChange(e)}
           />
         )}
       </div>
-      {data.help_text ? (
-        <p className="eb-option-input--help_text">{data.help_text}</p>
+      {option.help_text ? (
+        <p className="eb-option-input--help_text">{option.help_text}</p>
       ) : null}
     </div>
   ) : null;

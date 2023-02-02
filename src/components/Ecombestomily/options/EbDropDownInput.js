@@ -1,29 +1,29 @@
-import React, { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import EbOptionLabel from "./EbOptionLabel";
+import React, { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import EbOptionLabel from './EbOptionLabel';
 
 function EbDropDownInput(props) {
-  const { data, onSelectionChange, selectedId } = props;
+  const { option, onSelectionChange, selectedId } = props;
   const [selectedOption, setSelectedOption] = useState(
-    selectedId ?? data.values.find((i) => i.selected)?.id
+    selectedId ?? option.values.find((i) => i.selected)?.id
   );
   useEffect(() => {
-    onSelectionChange({ optionId: data.id, value: selectedOption });
+    onSelectionChange({ optionId: option.id, value: selectedOption });
   }, []);
 
   const handleChange = (e) => {
     setSelectedOption(e.target.value);
     if (onSelectionChange) {
-      onSelectionChange({ optionId: data.id, value: e.target.value });
+      onSelectionChange({ optionId: option.id, value: e.target.value });
     }
   };
 
-  return data && !data.hide_visually ? (
+  return option && !option.hide_visually ? (
     <div className="eb-option-input--wrapper">
       <EbOptionLabel
-        id={data.id}
-        label={data.label}
-        isRequired={data.required}
+        id={option.id}
+        label={option.label}
+        isRequired={option.required}
       />
 
       <div className="eb-option-input--body">
@@ -32,7 +32,7 @@ function EbDropDownInput(props) {
           onChange={handleChange}
           value={selectedOption}
         >
-          {data.values.map((option) => (
+          {option.values.map((option) => (
             <option
               key={uuidv4()}
               value={option.id}
@@ -43,8 +43,8 @@ function EbDropDownInput(props) {
           ))}
         </select>
       </div>
-      {data.help_text ? (
-        <p className="eb-option-input--help_text">{data.help_text}</p>
+      {option.help_text ? (
+        <p className="eb-option-input--help_text">{option.help_text}</p>
       ) : null}
     </div>
   ) : null;

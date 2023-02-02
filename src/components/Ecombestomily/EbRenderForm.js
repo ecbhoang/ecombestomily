@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 
-import EbDropDownInput from "./options/EbDropDownInput";
-import EbSwatchInput from "./options/EbSwatchInput";
-import EbTextInput from "./options/EbTextInput";
-import "./EbRenderForm.css";
-import EbImageUploadInput from "./options/EbImageUploadInput";
-import EbCheckBoxInput from "./options/EbCheckBoxInput\u001D";
+import EbDropDownInput from './options/EbDropDownInput';
+import EbSwatchInput from './options/EbSwatchInput';
+import EbTextInput from './options/EbTextInput';
+import './EbRenderForm.css';
+import EbImageUploadInput from './options/EbImageUploadInput';
+import EbCheckBoxInput from './options/EbCheckBoxInput';
 
 function EbRenderForm(props) {
   const { sets } = props;
@@ -23,21 +23,23 @@ function EbRenderForm(props) {
     });
   }, [sets]);
 
-  // Hàm này sẽ filter data gốc và trả về mảng mới bằng cách bỏ những item có hide_visually = true và không có condition
-  // Hàm này sẽ filter data gốc và lấy những item cần render ra theo formData
-  function initSetData(sets) {
+  function initSetData(data) {
     let renderList = [];
-    sets.forEach((item) => {
+    data.forEach((option) => {
+      // Render mặc định những option có hide_visually là false và có conditions hoặc mảng conditions bé hơn 1
       if (
-        !item.hide_visually &&
-        (!item.conditions || item.conditions.length < 1)
+        !option.hide_visually &&
+        (!option.conditions || option.conditions.length < 1)
       ) {
-        renderList.push(item);
+        renderList.push(option);
       } else {
-        const optionIds = item.conditions.map((v) => v.watch_option);
-        const exitstedOptions = sets.filter((v) => optionIds.includes(v.id));
-        if (!item.hide_visually && !exitstedOptions.length) {
-          renderList.push(item);
+        // Xử lí case có watch_option không tồn tại
+        const optionIds = new Set(
+          option.conditions.map((condition) => condition.watch_option)
+        );
+        const existedOption = data.filter((option) => optionIds.has(option.id));
+        if (!option.hide_visually && !existedOption.length) {
+          renderList.push(option);
         }
       }
     });
@@ -46,6 +48,9 @@ function EbRenderForm(props) {
 
   let { setsData, formData } = state;
 
+  console.log('>> initData: ', setsData);
+  console.log('>> formData: ', formData);
+
   function handleChange(result) {
     const { optionId, value } = result;
     formData[optionId] =
@@ -53,7 +58,7 @@ function EbRenderForm(props) {
         ? formData[optionId]
         : null;
     if (formData[optionId] !== value && value !== undefined) {
-      setsData = setsData.filter((item) => item.renderId !== optionId);
+      setsData = setsData.filter((option) => option.renderId !== optionId);
       watchGroup[optionId]?.forEach((option) => {
         const isExist = sets.find((set) => set.id === option);
         if (isExist) {
@@ -76,14 +81,15 @@ function EbRenderForm(props) {
     }
   }
 
+  // Hàm này sẽ tạo ra một object bao gồm props là các watch_option và value là một Set()các id option con có cái watch_option đó
   function groupOptionByWatchId(data) {
     const result = {};
-    data.forEach((item) => {
-      item.conditions.forEach((condition) => {
+    data.forEach((option) => {
+      option.conditions.forEach((condition) => {
         if (!result[condition.watch_option]) {
           result[condition.watch_option] = new Set();
         }
-        result[condition.watch_option].add(item.id);
+        result[condition.watch_option].add(option.id);
       });
     });
     return result;
@@ -98,7 +104,7 @@ function EbRenderForm(props) {
         value === condition.desired_value &&
         condition.watch_option === watchOptionId;
       result =
-        condition.combination_operator === "and"
+        condition.combination_operator === 'and'
           ? result && subCondition
           : result || subCondition;
     });
@@ -112,52 +118,52 @@ function EbRenderForm(props) {
         .map((input) => {
           const { id, type } = input;
           switch (type) {
-            case "Swatch":
+            case 'Swatch':
               return (
                 <EbSwatchInput
                   key={uuidv4()}
                   name={id}
                   onSelectionChange={handleChange}
-                  data={input}
+                  option={input}
                   selectedId={formData[input.id]}
                 />
               );
 
-            case "Checkbox":
+            case 'Checkbox':
               return (
                 <EbCheckBoxInput
                   key={uuidv4()}
                   name={id}
                   onSelectionClick={(item) => console.log(item)}
-                  data={input}
+                  option={input}
                 />
               );
-            case "Text Input":
+            case 'Text Input':
               return (
                 <EbTextInput
                   key={uuidv4()}
                   name={id}
                   onSelectionChange={(item) => console.log(item)}
-                  data={input}
+                  option={input}
                 />
               );
-            case "Dropdown":
+            case 'Dropdown':
               return (
                 <EbDropDownInput
                   key={uuidv4()}
                   name={id}
                   onSelectionChange={handleChange}
-                  data={input}
+                  option={input}
                   selectedId={formData[input.id]}
                 />
               );
-            case "Image Upload":
+            case 'Image Upload':
               return (
                 <EbImageUploadInput
                   key={uuidv4()}
                   name={id}
                   onSelectionChange={(item) => console.log(item)}
-                  data={input}
+                  option={input}
                   showPreview={false}
                 />
               );

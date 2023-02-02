@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import EbOptionLabel from './EbOptionLabel';
 
 function EbImageUploadInput(props) {
-  const { data, onSelectionChange, showPreview } = props;
+  const { option, onSelectionChange, showPreview } = props;
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleClickSelectImage = useCallback(() => {
@@ -29,12 +29,12 @@ function EbImageUploadInput(props) {
     reader.readAsDataURL(file);
   }
 
-  return !data.hide_visually ? (
+  return !option.hide_visually ? (
     <div className="eb-option-input--wrapper">
       <EbOptionLabel
-        id={data.id}
-        label={data.label}
-        isRequired={data.required}
+        id={option.id}
+        label={option.label}
+        isRequired={option.required}
       />
 
       <div className="eb-option-input--body">
@@ -81,8 +81,8 @@ function EbImageUploadInput(props) {
             </div>
           )
         ) : null}
-        {data.help_text ? (
-          <p className="eb-option-input--help_text">{data.help_text}</p>
+        {option.help_text ? (
+          <p className="eb-option-input--help_text">{option.help_text}</p>
         ) : null}
       </div>
     </div>
