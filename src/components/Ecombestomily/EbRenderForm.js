@@ -48,8 +48,8 @@ function EbRenderForm(props) {
 
   let { setsData, formData } = state;
 
-  console.log('>> initData: ', setsData);
-  console.log('>> formData: ', formData);
+  // console.log('>> setsData: ', setsData);
+  // console.log('>> formData: ', formData);
 
   function handleChange(result) {
     const { optionId, value } = result;
@@ -112,7 +112,8 @@ function EbRenderForm(props) {
   }
 
   return (
-    <div className="Ecombestomily">
+    <div className="eb-personalize render-form right">
+      <h1>EbRenderForm</h1>
       {setsData
         ?.sort((a, b) => a.sort_id - b.sort_id)
         .map((input) => {

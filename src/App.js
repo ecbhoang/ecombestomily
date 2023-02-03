@@ -1,11 +1,12 @@
-import { useMemo, useState } from "react";
-import "./App.css";
-import { data } from "./assets/sampleData";
+import { useMemo, useState } from 'react';
+import './App.css';
+import { data } from './assets/sampleData';
+import EbPreviewCanvas from './components/Ecombestomily/EbPreviewCanvas';
 
-import EbRenderForm from "./components/Ecombestomily/EbRenderForm";
+import EbRenderForm from './components/Ecombestomily/EbRenderForm';
 
 function App() {
-  const [selectedData, setSelectedData] = useState("sampleData1");
+  const [selectedData, setSelectedData] = useState(Object.keys(data)[0]);
 
   const setsData = useMemo(() => {
     return data[selectedData];
@@ -24,8 +25,8 @@ function App() {
         style={{
           paddingBottom: 30,
           marginTop: 20,
-          borderBottom: "2px dashed gray",
-          color: "orange",
+          borderBottom: '2px dashed gray',
+          color: 'orange',
         }}
       >
         <label htmlFor="mow" className="eb-option-input--label">
@@ -46,6 +47,7 @@ function App() {
           })}
         </select>
       </div>
+      <EbPreviewCanvas />
       <EbRenderForm sets={setsData} />
     </div>
   );

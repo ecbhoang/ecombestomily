@@ -1,0 +1,9 @@
+.eb-personalize.preview-canvas .canvas-container {
+  opacity: 1 !important;
+}
+
+.eb-preview-canvas--container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
