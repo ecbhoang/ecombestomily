@@ -11,6 +11,7 @@ function EbImageUploadInput(props) {
 
   useEffect(() => {
     if (onSelectionChange) onSelectionChange(selectedImage);
+    window.engraver.setImage(1 ?? '0', selectedImage);
   }, [selectedImage, onSelectionChange]);
 
   function onChangeHandler(e) {

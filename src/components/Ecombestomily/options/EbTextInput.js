@@ -10,7 +10,11 @@ function EbTextInput(props) {
   const uuid_input = uuidv4();
 
   const handleChange = (e) => {
-    window.engraver.setText(option.functions[0]?.text_id ?? 0, e.target.value);
+    // option.functions[0]?.text_id
+    window.engraver.setText(
+      Number(option.functions[0]?.text_id) ?? 0,
+      e.target.value
+    );
     //should be in debounce mode
     if (option.max_length >= e.target.value.length) {
       setInputCounter(e.target.value.length);
