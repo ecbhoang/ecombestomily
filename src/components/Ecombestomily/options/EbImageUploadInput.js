@@ -16,6 +16,9 @@ function EbImageUploadInput(props) {
 
   function onChangeHandler(e) {
     if (!e) {
+      const defaultBase64Image =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=';
+      window.engraver.setImage(1 ?? '0', defaultBase64Image);
       setSelectedImage(null);
     } else {
       encodeImageFileAsURL(e.target.files[0]);
@@ -49,7 +52,7 @@ function EbImageUploadInput(props) {
           className="eb-btn-upload-image"
           onClick={handleClickSelectImage}
         >
-          {selectedImage ? 'Change Image' : 'Select Image'}
+          Select Image
         </button>
         {selectedImage ? (
           !showPreview ? (

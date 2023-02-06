@@ -10,12 +10,14 @@ import EbImageUploadInput from './options/EbImageUploadInput';
 import EbCheckBoxInput from './options/EbCheckBoxInput';
 
 function EbRenderForm(props) {
+  const { engraver } = window;
   const { sets } = props;
   sets.sort((a, b) => a.sort_id - b.sort_id);
   const watchGroup = groupOptionByWatchId(sets);
   const [state, setState] = useState({});
 
   useEffect(() => {
+    // renderDefaultPresetImage(sets);
     const initData = initSetData(sets);
     setState({
       setsData: initData,
@@ -23,26 +25,49 @@ function EbRenderForm(props) {
     });
   }, [sets]);
 
+  // function renderDefaultPresetImage(options) {
+  //   let output = [];
+  //   console.log('options', options);
+  //   let result = options
+  //     .map((option) => {
+  //       return { values: option.values, functions: option.functions };
+  //     })
+  //     .filter((item) => item.values !== undefined);
+  //   result.forEach((element) => {
+  //     element.values.forEach((el) => {
+  //       if (el.selected) {
+  //         window.engraver.setPresetImage(
+  //           element?.functions[0]?.image_id,
+  //           el.image_id
+  //         );
+  //         output.push(element);
+  //       }
+  //     });
+  //   });
+  //   console.log('Output', output);
+  //   console.log('Result', result);
+  // }
+
   function initSetData(data) {
     let renderList = [];
     data.forEach((option) => {
-      // Render mặc định những option có hide_visually là false và có conditions hoặc mảng conditions bé hơn 1
+      const optionIds = new Set(
+        option.conditions.map((condition) => condition.watch_option)
+      );
+      const existedOption = data.filter((option) => optionIds.has(option.id));
+
+      // Render mặc định những option có hide_visually là false và có conditions hoặc mảng conditions bé hơn 1 và Xử lí case có watch_option không tồn tại
       if (
-        !option.hide_visually &&
-        (!option.conditions || option.conditions.length < 1)
+        !option.conditions ||
+        option.conditions.length < 1 ||
+        !existedOption.length ||
+        option.hide_visually
       ) {
         renderList.push(option);
       } else {
-        // Xử lí case có watch_option không tồn tại
-        const optionIds = new Set(
-          option.conditions.map((condition) => condition.watch_option)
-        );
-        const existedOption = data.filter((option) => optionIds.has(option.id));
-        if (!option.hide_visually && !existedOption.length) {
-          renderList.push(option);
-        }
       }
     });
+    // console.log('renderList', renderList);
     return renderList;
   }
 
@@ -51,8 +76,20 @@ function EbRenderForm(props) {
   // console.log('>> setsData: ', setsData);
   // console.log('>> formData: ', formData);
 
+  const getInfoOption = (values) => {
+    values = values.map((value) => {
+      return {
+        prodId: value.product_id,
+        id: value.id,
+        imageId: value.image_id,
+      };
+    });
+    return values;
+  };
+
   function handleChange(result) {
-    const { optionId, value } = result;
+    const { optionId, value, functions, valueObj } = result;
+
     formData[optionId] =
       formData[optionId] || formData[optionId] === 0
         ? formData[optionId]
@@ -77,6 +114,31 @@ function EbRenderForm(props) {
           ...formData,
           [optionId]: value,
         },
+      });
+
+      functions?.forEach(async (func) => {
+        switch (func.type) {
+          case 'image': {
+            await engraver.setPresetImage(
+              Number(func.image_id),
+              Number(valueObj.image_id)
+            );
+
+            break;
+          }
+          case 'text': {
+            await engraver.setText(Number(func.text_id), value);
+            break;
+          }
+          case 'product': {
+            await engraver.setProduct(valueObj.product_id);
+            break;
+          }
+          default: {
+            console.log('Default type', func.type);
+            break;
+          }
+        }
       });
     }
   }
@@ -112,11 +174,17 @@ function EbRenderForm(props) {
   }
 
   return (
-    <div className="eb-personalize render-form right">
+    <div className="render-form right">
       <h1>EbRenderForm</h1>
       {setsData
         ?.sort((a, b) => a.sort_id - b.sort_id)
         .map((input) => {
+          if (
+            [953, 966, 955, 960, 964].includes(Number(input.id)) ||
+            input.hide_visually
+          ) {
+            console.log('input', input);
+          }
           const { id, type } = input;
           switch (type) {
             case 'Swatch':
@@ -135,7 +203,9 @@ function EbRenderForm(props) {
                 <EbCheckBoxInput
                   key={uuidv4()}
                   name={id}
-                  onSelectionClick={(item) => console.log(item)}
+                  onSelectionClick={(item) => {
+                    // console.log(item)
+                  }}
                   option={input}
                 />
               );

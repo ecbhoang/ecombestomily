@@ -3,36 +3,51 @@ import EbOptionLabel from './EbOptionLabel';
 
 function EbSwatchInput(props) {
   const { option, onSelectionChange, selectedId } = props;
+  if (option.id === 188) {
+    console.log('selectedId', selectedId, option.values);
+    console.log(
+      'ok',
+      option.values.find((o) =>
+        selectedId !== undefined
+          ? Number(o.id) === Number(selectedId)
+          : o.selected
+      )
+    );
+  }
   const [selected, setSelected] = useState(
-    option.values.find((o) => (selectedId ? o.id === selectedId : o.selected))
+    option.values.find((o) =>
+      selectedId !== undefined
+        ? Number(o.id) === Number(selectedId)
+        : o.selected
+    )
   );
 
   useEffect(() => {
-    onSelectionChange({ optionId: option.id, value: selected?.id });
+    if (selected) {
+      onSelectionChange({
+        optionId: option.id,
+        value: selected?.id,
+        valueObj: option.values.find((value) => value.id === selected.id),
+        functions: option.functions,
+      });
+    }
   }, []);
 
   const handleClick = (item) => {
-    console.log(
-      '123',
-      window.engraver.setImage(
-        2 ?? 0,
-        'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg'
-      )
-    );
-
     if (!selected || item.id !== selected.id) {
-      option.values.forEach((s) => (s.selected = s.id === item.id));
       setSelected(item);
       if (onSelectionChange) {
         onSelectionChange({
           value: item.id,
           optionId: option.id,
+          valueObj: item,
+          functions: option.functions,
         });
       }
     }
   };
 
-  return option ? (
+  return !option.hide_visually ? (
     <div className="eb-option-input--wrapper">
       <EbOptionLabel
         id={option.id}

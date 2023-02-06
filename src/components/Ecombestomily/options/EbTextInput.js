@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import EbOptionLabel from './EbOptionLabel';
 
@@ -9,8 +9,19 @@ function EbTextInput(props) {
 
   const uuid_input = uuidv4();
 
+  const helpText = option.help_text
+    .replace('Example: ', '')
+    .replace('amp;', '');
+
+  useEffect(() => {
+    window.engraver.setText(
+      Number(option.functions[0]?.text_id) ?? 0,
+      helpText
+    );
+  }, []);
+
   const handleChange = (e) => {
-    // option.functions[0]?.text_id
+    // option.functions[0]?.text_idamp
     window.engraver.setText(
       Number(option.functions[0]?.text_id) ?? 0,
       e.target.value
@@ -20,7 +31,12 @@ function EbTextInput(props) {
       setInputCounter(e.target.value.length);
       setInputValue(e.target.value);
       if (onSelectionChange)
-        onSelectionChange({ optionId: option.id, value: e.target.value });
+        onSelectionChange({
+          optionId: option.id,
+          value: e.target.value,
+          valueObj: null,
+          functions: option.functions,
+        });
     }
   };
 
