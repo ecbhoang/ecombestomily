@@ -3,17 +3,6 @@ import EbOptionLabel from './EbOptionLabel';
 
 function EbSwatchInput(props) {
   const { option, onSelectionChange, selectedId } = props;
-  if (option.id === 188) {
-    console.log('selectedId', selectedId, option.values);
-    console.log(
-      'ok',
-      option.values.find((o) =>
-        selectedId !== undefined
-          ? Number(o.id) === Number(selectedId)
-          : o.selected
-      )
-    );
-  }
   const [selected, setSelected] = useState(
     option.values.find((o) =>
       selectedId !== undefined

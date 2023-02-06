@@ -17,36 +17,12 @@ function EbRenderForm(props) {
   const [state, setState] = useState({});
 
   useEffect(() => {
-    // renderDefaultPresetImage(sets);
     const initData = initSetData(sets);
     setState({
       setsData: initData,
       formData: {},
     });
   }, [sets]);
-
-  // function renderDefaultPresetImage(options) {
-  //   let output = [];
-  //   console.log('options', options);
-  //   let result = options
-  //     .map((option) => {
-  //       return { values: option.values, functions: option.functions };
-  //     })
-  //     .filter((item) => item.values !== undefined);
-  //   result.forEach((element) => {
-  //     element.values.forEach((el) => {
-  //       if (el.selected) {
-  //         window.engraver.setPresetImage(
-  //           element?.functions[0]?.image_id,
-  //           el.image_id
-  //         );
-  //         output.push(element);
-  //       }
-  //     });
-  //   });
-  //   console.log('Output', output);
-  //   console.log('Result', result);
-  // }
 
   function initSetData(data) {
     let renderList = [];
@@ -67,25 +43,10 @@ function EbRenderForm(props) {
       } else {
       }
     });
-    // console.log('renderList', renderList);
     return renderList;
   }
 
   let { setsData, formData } = state;
-
-  // console.log('>> setsData: ', setsData);
-  // console.log('>> formData: ', formData);
-
-  const getInfoOption = (values) => {
-    values = values.map((value) => {
-      return {
-        prodId: value.product_id,
-        id: value.id,
-        imageId: value.image_id,
-      };
-    });
-    return values;
-  };
 
   function handleChange(result) {
     const { optionId, value, functions, valueObj } = result;
@@ -123,7 +84,6 @@ function EbRenderForm(props) {
               Number(func.image_id),
               Number(valueObj.image_id)
             );
-
             break;
           }
           case 'text': {
@@ -179,12 +139,6 @@ function EbRenderForm(props) {
       {setsData
         ?.sort((a, b) => a.sort_id - b.sort_id)
         .map((input) => {
-          if (
-            [953, 966, 955, 960, 964].includes(Number(input.id)) ||
-            input.hide_visually
-          ) {
-            console.log('input', input);
-          }
           const { id, type } = input;
           switch (type) {
             case 'Swatch':

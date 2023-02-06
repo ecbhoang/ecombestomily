@@ -21,7 +21,6 @@ function EbTextInput(props) {
   }, []);
 
   const handleChange = (e) => {
-    // option.functions[0]?.text_idamp
     window.engraver.setText(
       Number(option.functions[0]?.text_id) ?? 0,
       e.target.value
