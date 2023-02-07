@@ -16,7 +16,7 @@ function EbSwatchInput(props) {
       onSelectionChange({
         optionId: option.id,
         value: selected?.id,
-        valueObj: option.values.find((value) => value.id === selected.id),
+        valueObj: selected,
         functions: option.functions,
       });
     }

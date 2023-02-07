@@ -3,14 +3,25 @@ import EbOptionLabel from './EbOptionLabel';
 
 function EbCheckBoxInput(props) {
   const { option, onSelectionClick } = props;
-  const [isSelected, setIsSelected] = useState(option.startSelected);
+  const [isSelected, setIsSelected] = useState(option.startSelected || false);
 
-  const handleClick = (e) => {
+  const handleChange = (e) => {
     setIsSelected(e.target.checked);
+    onSelectionClick({
+      optionId: option.id,
+      value: e.target.checked,
+      functions: option.functions,
+      // valueObj: option.values.find((value) => value.id === option.id),
+    });
   };
 
   useEffect(() => {
-    onSelectionClick({ optionId: option.id, value: isSelected });
+    onSelectionClick({
+      optionId: option.id,
+      value: isSelected,
+      functions: option.functions,
+      // valueObj: option.values.find((value) => value.id === option.id),
+    });
   }, [isSelected]);
 
   return option && !option.hide_visually ? (
@@ -21,7 +32,7 @@ function EbCheckBoxInput(props) {
       <input
         type="checkbox"
         checked={isSelected}
-        onClick={handleClick}
+        onChange={handleChange}
         className="eb-checkbox-input--item"
       />
       <div className="eb-checkbox-input--label">

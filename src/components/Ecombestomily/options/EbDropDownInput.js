@@ -11,8 +11,8 @@ function EbDropDownInput(props) {
     onSelectionChange({
       optionId: option.id,
       value: selectedOption,
-      functions: option.functions,
       valueObj: option.values.find((value) => value.id === selectedOption),
+      functions: option.functions,
     });
   }, []);
 

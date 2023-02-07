@@ -10,7 +10,7 @@ import EbImageUploadInput from './options/EbImageUploadInput';
 import EbCheckBoxInput from './options/EbCheckBoxInput';
 
 function EbRenderForm(props) {
-  const { engraver } = window;
+  const { ebCanvas } = window;
   const { sets } = props;
   sets.sort((a, b) => a.sort_id - b.sort_id);
   const watchGroup = groupOptionByWatchId(sets);
@@ -78,27 +78,11 @@ function EbRenderForm(props) {
       });
 
       functions?.forEach(async (func) => {
-        switch (func.type) {
-          case 'image': {
-            await engraver.setPresetImage(
-              Number(func.image_id),
-              Number(valueObj.image_id)
-            );
-            break;
-          }
-          case 'text': {
-            await engraver.setText(Number(func.text_id), value);
-            break;
-          }
-          case 'product': {
-            await engraver.setProduct(valueObj.product_id);
-            break;
-          }
-          default: {
-            console.log('Default type', func.type);
-            break;
-          }
-        }
+        await ebCanvas.renderCanvas({
+          optionId: optionId,
+          funcObj: func,
+          valueObj: valueObj,
+        });
       });
     }
   }
@@ -168,7 +152,7 @@ function EbRenderForm(props) {
                 <EbTextInput
                   key={uuidv4()}
                   name={id}
-                  onSelectionChange={(item) => console.log(item)}
+                  onSelectionChange={handleChange}
                   option={input}
                 />
               );

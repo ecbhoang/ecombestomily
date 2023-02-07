@@ -1,12 +1,12 @@
 import { useMemo, useState, useEffect } from 'react';
 import './App.css';
 import { data } from './assets/sampleData';
-import EbPreviewCanvas from './components/Ecombestomily/EbPreviewCanvas';
+import EbCanvasController from './components/Ecombestomily/EbCanvasController';
 
 import EbRenderForm from './components/Ecombestomily/EbRenderForm';
 
 function App() {
-  const [selectedData, setSelectedData] = useState(Object.keys(data)[2]);
+  const [selectedDgithuata, setSelectedData] = useState(Object.keys(data)[0]);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -71,6 +71,7 @@ function App() {
             <canvas id="preview-canvas" />
           </div>
         </div>
+        <EbCanvasController />
         {isReady ? <EbRenderForm sets={setsData} /> : null}
       </div>
     </div>

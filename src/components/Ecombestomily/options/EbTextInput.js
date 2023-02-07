@@ -9,22 +9,18 @@ function EbTextInput(props) {
 
   const uuid_input = uuidv4();
 
-  const helpText = option.help_text
-    .replace('Example: ', '')
-    .replace('amp;', '');
+  // const helpText = option.help_text
+  //   .replace('Example: ', '')
+  //   .replace('amp;', '');
 
   useEffect(() => {
-    window.engraver.setText(
-      Number(option.functions[0]?.text_id) ?? 0,
-      helpText
-    );
+    // window.engraver.setText(
+    //   Number(option.functions[0]?.text_id) ?? 0,
+    //   helpText
+    // );
   }, []);
 
   const handleChange = (e) => {
-    window.engraver.setText(
-      Number(option.functions[0]?.text_id) ?? 0,
-      e.target.value
-    );
     //should be in debounce mode
     if (option.max_length >= e.target.value.length) {
       setInputCounter(e.target.value.length);
@@ -33,7 +29,6 @@ function EbTextInput(props) {
         onSelectionChange({
           optionId: option.id,
           value: e.target.value,
-          valueObj: null,
           functions: option.functions,
         });
     }
