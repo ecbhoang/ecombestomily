@@ -8,11 +8,13 @@ import EbTextInput from './options/EbTextInput';
 import './EbRenderForm.css';
 import EbImageUploadInput from './options/EbImageUploadInput';
 import EbCheckBoxInput from './options/EbCheckBoxInput';
+import { parseDataMultipleLevel } from '../../assets/scripts/helpers';
 
 function EbRenderForm(props) {
   const { sets } = props;
   sets.sort((a, b) => a.sort_id - b.sort_id);
   const watchGroup = groupOptionByWatchId(sets);
+  console.log('watchGroup', watchGroup);
   const [state, setState] = useState({});
 
   useEffect(() => {
@@ -52,24 +54,45 @@ function EbRenderForm(props) {
   // console.log('>> formData: ', formData);
 
   function handleChange(result) {
+    // option là id của cái option đang có sự thay đổi
+    // value là một object bao gồm optionId và value của option đang có sự change
+
     const { optionId, value } = result;
     formData[optionId] =
       formData[optionId] || formData[optionId] === 0
         ? formData[optionId]
         : null;
     if (formData[optionId] !== value && value !== undefined) {
-      setsData = setsData.filter((option) => option.renderId !== optionId);
-      watchGroup[optionId]?.forEach((option) => {
-        const isExist = sets.find((set) => set.id === option);
+      if (watchGroup[optionId]) {
+        setsData = setsData.filter(
+          (option) => !watchGroup[optionId].includes(option.id)
+        );
+      }
+      watchGroup[optionId]?.forEach((option, index) => {
+        if (index === 0) {
+          return;
+        }
+        const isExist = sets.find((set) => Number(set.id) === Number(option));
         if (isExist) {
+          // console.log(
+          //   'isExist.conditions, value, optionId',
+          //   isExist.conditions,
+          //   value,
+          //   optionId
+          // );
           if (
-            checkConditions(isExist.conditions, value, optionId) &&
+            checkConditions(
+              isExist.conditions,
+              Number(value),
+              Number(optionId)
+            ) &&
             !isExist.hide_visually
           ) {
             setsData.push({ ...isExist, renderId: optionId });
           }
         }
       });
+      // console.log('setsData', setsData);
 
       setState({
         setsData: setsData,
@@ -92,7 +115,7 @@ function EbRenderForm(props) {
         result[condition.watch_option].add(option.id);
       });
     });
-    return result;
+    return parseDataMultipleLevel(result);
   }
 
   // Hàm này sẽ check các condition của thằng con có desired_value và watch_option === với value của thằng cha đang chờ onChange hay không?
@@ -110,6 +133,8 @@ function EbRenderForm(props) {
     });
     return result;
   }
+
+  console.log('setsData', setsData);
 
   return (
     <div className="eb-personalize render-form right">
@@ -135,7 +160,9 @@ function EbRenderForm(props) {
                 <EbCheckBoxInput
                   key={uuidv4()}
                   name={id}
-                  onSelectionClick={(item) => console.log(item)}
+                  onSelectionClick={(item) => {
+                    // console.log(item)
+                  }}
                   option={input}
                 />
               );
@@ -144,7 +171,9 @@ function EbRenderForm(props) {
                 <EbTextInput
                   key={uuidv4()}
                   name={id}
-                  onSelectionChange={(item) => console.log(item)}
+                  onSelectionChange={(item) => {
+                    // console.log(item);
+                  }}
                   option={input}
                 />
               );
@@ -163,7 +192,9 @@ function EbRenderForm(props) {
                 <EbImageUploadInput
                   key={uuidv4()}
                   name={id}
-                  onSelectionChange={(item) => console.log(item)}
+                  onSelectionChange={(item) => {
+                    // console.log(item)
+                  }}
                   option={input}
                   showPreview={false}
                 />

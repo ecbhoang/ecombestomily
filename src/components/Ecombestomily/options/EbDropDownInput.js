@@ -18,6 +18,16 @@ function EbDropDownInput(props) {
     }
   };
 
+  const isChooseAnOption = () => {
+    let isChooseAnOption = true;
+    option.values.forEach((value) => {
+      if (value.selected) {
+        isChooseAnOption = false;
+      }
+    });
+    return isChooseAnOption;
+  };
+
   return option && !option.hide_visually ? (
     <div className="eb-option-input--wrapper">
       <EbOptionLabel
@@ -30,17 +40,24 @@ function EbDropDownInput(props) {
         <select
           className="eb-dropdown-input--item"
           onChange={handleChange}
-          value={selectedOption}
+          value={selectedOption || -1}
         >
-          {option.values.map((option) => (
-            <option
-              key={uuidv4()}
-              value={option.id}
-              data-product={option.product_id}
-            >
-              {option.value}
+          {isChooseAnOption() && (
+            <option hidden={true} disabled="disabled" value={-1}>
+              Choose an Option
             </option>
-          ))}
+          )}
+          {option.values.map((option) => {
+            return (
+              <option
+                key={uuidv4()}
+                value={option.id}
+                data-product={option.product_id}
+              >
+                {option.value}
+              </option>
+            );
+          })}
         </select>
       </div>
       {option.help_text ? (
