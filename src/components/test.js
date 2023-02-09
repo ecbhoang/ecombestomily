@@ -11,13 +11,11 @@ import EbCheckBoxInput from './options/EbCheckBoxInput';
 import { parseDataMultipleLevel } from '../../assets/scripts/helpers';
 
 function EbRenderForm(props) {
-  // const { engraver } = window;
   const { sets } = props;
   sets.sort((a, b) => a.sort_id - b.sort_id);
   const watchGroup = groupOptionByWatchId(sets);
   console.log('watchGroup', watchGroup);
   const [state, setState] = useState({});
-  const [textInput, setTextInput] = useState({});
 
   useEffect(() => {
     const initData = initSetData(sets);
@@ -30,20 +28,21 @@ function EbRenderForm(props) {
   function initSetData(data) {
     let renderList = [];
     data.forEach((option) => {
-      const optionIds = new Set(
-        option.conditions.map((condition) => condition.watch_option)
-      );
-      const existedOption = data.filter((option) => optionIds.has(option.id));
-
-      // Render mặc định những option có hide_visually là false và có conditions hoặc mảng conditions bé hơn 1 và Xử lí case có watch_option không tồn tại
+      // Render mặc định những option có hide_visually là false và có conditions hoặc mảng conditions bé hơn 1
       if (
-        !option.conditions ||
-        option.conditions.length < 1 ||
-        !existedOption.length ||
-        option.hide_visually
+        !option.hide_visually &&
+        (!option.conditions || option.conditions.length < 1)
       ) {
         renderList.push(option);
       } else {
+        // Xử lí case có watch_option không tồn tại
+        const optionIds = new Set(
+          option.conditions.map((condition) => condition.watch_option)
+        );
+        const existedOption = data.filter((option) => optionIds.has(option.id));
+        if (!option.hide_visually && !existedOption.length) {
+          renderList.push(option);
+        }
       }
     });
     return renderList;
@@ -51,52 +50,49 @@ function EbRenderForm(props) {
 
   let { setsData, formData } = state;
 
-  function handleChange(result) {
-    const { optionId, value } = result;
+  // console.log('>> setsData: ', setsData);
+  // console.log('>> formData: ', formData);
 
+  function handleChange(result) {
+    // option là id của cái option đang có sự thay đổi
+    // value là một object bao gồm optionId và value của option đang có sự change
+
+    const { optionId, value } = result;
     formData[optionId] =
       formData[optionId] || formData[optionId] === 0
         ? formData[optionId]
         : null;
     if (formData[optionId] !== value && value !== undefined) {
-      console.log('>> Data root: ', setsData);
-
       if (watchGroup[optionId]) {
-        console.log(
-          '>> Delete data: ',
-          setsData.filter(
-            (option) =>
-              watchGroup[optionId].includes(option.id) ||
-              Number(optionId) !== Number(option.id)
-          )
-        );
-
         setsData = setsData.filter(
-          (option) =>
-            !watchGroup[optionId].includes(option.id) ||
-            Number(optionId) === Number(option.id)
+          (option) => !watchGroup[optionId].includes(option.id)
         );
-        console.log('setsData', setsData);
-
-        // setsData = setsData.filter((option) => option?.renderId !== optionId);
       }
       watchGroup[optionId]?.forEach((option, index) => {
-        // if (index === 0) {
-        //   console.log('Option', option);
-        //   return;
-        // }
+        if (index === 0) {
+          return;
+        }
         const isExist = sets.find((set) => Number(set.id) === Number(option));
         if (isExist) {
+          // console.log(
+          //   'isExist.conditions, value, optionId',
+          //   isExist.conditions,
+          //   value,
+          //   optionId
+          // );
           if (
-            checkConditions(isExist.conditions, value, optionId) &&
+            checkConditions(
+              isExist.conditions,
+              Number(value),
+              Number(optionId)
+            ) &&
             !isExist.hide_visually
           ) {
-            if (!setsData.find((option) => option.id === isExist.id)) {
-              setsData.push({ ...isExist, renderId: optionId });
-            }
+            setsData.push({ ...isExist, renderId: optionId });
           }
         }
       });
+      // console.log('setsData', setsData);
 
       setState({
         setsData: setsData,
@@ -105,30 +101,6 @@ function EbRenderForm(props) {
           [optionId]: value,
         },
       });
-
-      // functions?.forEach(async (func) => {
-      //   switch (func.type) {
-      //     case 'image': {
-      //       await engraver.setPresetImage(
-      //         Number(func.image_id),
-      //         Number(valueObj.image_id)
-      //       );
-      //       break;
-      //     }
-      //     case 'text': {
-      //       await engraver.setText(Number(func.text_id), value);
-      //       break;
-      //     }
-      //     case 'product': {
-      //       await engraver.setProduct(valueObj.product_id);
-      //       break;
-      //     }
-      //     default: {
-      //       console.log('Default type', func.type);
-      //       break;
-      //     }
-      //   }
-      // });
     }
   }
 
@@ -149,7 +121,6 @@ function EbRenderForm(props) {
   // Hàm này sẽ check các condition của thằng con có desired_value và watch_option === với value của thằng cha đang chờ onChange hay không?
   function checkConditions(conditions, value, watchOptionId) {
     let result;
-    value = Number(value);
     conditions.forEach((condition) => {
       const subCondition =
         value === condition.desired_value &&
@@ -162,11 +133,10 @@ function EbRenderForm(props) {
     return result;
   }
 
-  // console.log('setsData', setsData);
-  // console.log('formData', formData);
+  console.log('setsData', setsData);
 
   return (
-    <div className="render-form right">
+    <div className="eb-personalize render-form right">
       <h1>EbRenderForm</h1>
       {setsData
         ?.sort((a, b) => a.sort_id - b.sort_id)
@@ -198,12 +168,12 @@ function EbRenderForm(props) {
             case 'Text Input':
               return (
                 <EbTextInput
-                  key={['textinput', input.id].join('_')}
+                  key={uuidv4()}
                   name={id}
-                  onSelectionChange={(item) => console.log(item)}
+                  onSelectionChange={(item) => {
+                    // console.log(item);
+                  }}
                   option={input}
-                  handleSetTextInput={setTextInput}
-                  textInput={textInput}
                 />
               );
             case 'Dropdown':
@@ -221,7 +191,9 @@ function EbRenderForm(props) {
                 <EbImageUploadInput
                   key={uuidv4()}
                   name={id}
-                  onSelectionChange={(item) => console.log(item)}
+                  onSelectionChange={(item) => {
+                    // console.log(item)
+                  }}
                   option={input}
                   showPreview={false}
                 />

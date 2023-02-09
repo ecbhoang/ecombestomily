@@ -3,7 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import EbOptionLabel from './EbOptionLabel';
 
 function EbTextInput(props) {
-  const { option, onSelectionChange, value } = props;
+  const { option, onSelectionChange, value, handleSetTextInput, textInput } =
+    props;
   const [inputValue, setInputValue] = useState(value ?? '');
   const [inputCounter, setInputCounter] = useState(0);
 
@@ -18,13 +19,17 @@ function EbTextInput(props) {
     //   Number(option.functions[0]?.text_id) ?? 0,
     //   helpText
     // );
+    console.log('Reloaded');
   }, []);
 
   const handleChange = (e) => {
     //should be in debounce mode
     if (option.max_length >= e.target.value.length) {
       setInputCounter(e.target.value.length);
-      setInputValue(e.target.value);
+      handleSetTextInput({
+        ...textInput,
+        [option.id]: e.target.value,
+      });
       if (onSelectionChange)
         onSelectionChange({
           optionId: option.id,
@@ -54,7 +59,7 @@ function EbTextInput(props) {
             cols={option.cols ?? 10}
             rows={option.rows ?? 4}
             value={inputValue}
-            onChange={(e) => handleChange(e.target.value)}
+            onChange={(e) => handleChange(e)}
           ></textarea>
         ) : (
           <input
@@ -62,7 +67,7 @@ function EbTextInput(props) {
             id={uuid_input}
             placeholder={option.placeholder ? option.placeholder : null}
             className="eb-text-input--item"
-            value={inputValue}
+            value={textInput[option.id]}
             onChange={(e) => handleChange(e)}
           />
         )}

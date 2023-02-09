@@ -8,26 +8,24 @@ function EbDropDownInput(props) {
     selectedId ?? option.values.find((i) => i.selected)?.id
   );
   useEffect(() => {
-    onSelectionChange({
-      optionId: option.id,
-      value: selectedOption,
-      valueObj: option.values.find((value) => value.id === selectedOption),
-      functions: option.functions,
-    });
+    onSelectionChange({ optionId: option.id, value: selectedOption });
   }, []);
 
   const handleChange = (e) => {
     setSelectedOption(e.target.value);
     if (onSelectionChange) {
-      onSelectionChange({
-        optionId: option.id,
-        value: e.target.value,
-        valueObj: option.values.find(
-          (value) => Number(value.id) === Number(e.target.value)
-        ),
-        functions: option.functions,
-      });
+      onSelectionChange({ optionId: option.id, value: e.target.value });
     }
+  };
+
+  const isChooseAnOption = () => {
+    let isChooseAnOption = true;
+    option.values.forEach((value) => {
+      if (value.selected) {
+        isChooseAnOption = false;
+      }
+    });
+    return isChooseAnOption;
   };
 
   return option && !option.hide_visually ? (
@@ -42,17 +40,24 @@ function EbDropDownInput(props) {
         <select
           className="eb-dropdown-input--item"
           onChange={handleChange}
-          value={selectedOption}
+          value={selectedOption || -1}
         >
-          {option.values.map((option) => (
-            <option
-              key={uuidv4()}
-              value={option.id}
-              data-product={option.product_id}
-            >
-              {option.value}
+          {isChooseAnOption() && (
+            <option hidden={true} disabled="disabled" value={-1}>
+              Choose an Option
             </option>
-          ))}
+          )}
+          {option.values.map((option) => {
+            return (
+              <option
+                key={uuidv4()}
+                value={option.id}
+                data-product={option.product_id}
+              >
+                {option.value}
+              </option>
+            );
+          })}
         </select>
       </div>
       {option.help_text ? (

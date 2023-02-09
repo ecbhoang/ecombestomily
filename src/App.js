@@ -1,29 +1,11 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import './App.css';
 import { data } from './assets/sampleData';
 import EbCanvasController from './components/Ecombestomily/EbCanvasController';
-
 import EbRenderForm from './components/Ecombestomily/EbRenderForm';
 
 function App() {
-  const [selectedDgithuata, setSelectedData] = useState(Object.keys(data)[0]);
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    window.engraver.init('preview-canvas');
-
-    setTimeout(() => {
-      // default product: 1db22f03-e59b-4363-a2bd-639dadfdd97c
-      // customFlag: 8db9d06e-cdc3-4232-b30d-ae1036d3fd46
-      // customMetalSign: 1c960976-b1b1-48ee-969f-5da2bafab376
-      // customPhoto: 26f8bd7f-86d8-44f3-8cc8-154b082c3839
-      window.engraver
-        .setProduct('8db9d06e-cdc3-4232-b30d-ae1036d3fd46')
-        .then(() => {
-          setIsReady(true);
-        });
-    }, 2000);
-  }, []);
+  const [selectedData, setSelectedData] = useState(Object.keys(data)[0]);
 
   const setsData = useMemo(() => {
     return data[selectedData];
@@ -64,16 +46,8 @@ function App() {
           })}
         </select>
       </div>
-      <div className="eb-personalize">
-        <div className="preview-canvas left">
-          <h1>EbPreviewCanvas</h1>
-          <div className="eb-preview-canvas--container">
-            <canvas id="preview-canvas" />
-          </div>
-        </div>
-        <EbCanvasController />
-        {isReady ? <EbRenderForm sets={setsData} /> : null}
-      </div>
+      <EbCanvasController />
+      <EbRenderForm sets={setsData} />
     </div>
   );
 }
