@@ -19,7 +19,6 @@ function EbTextInput(props) {
     //   Number(option.functions[0]?.text_id) ?? 0,
     //   helpText
     // );
-    console.log('Reloaded');
   }, []);
 
   const handleChange = (e) => {

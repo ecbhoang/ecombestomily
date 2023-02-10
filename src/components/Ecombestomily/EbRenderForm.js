@@ -15,14 +15,13 @@ function EbRenderForm(props) {
   const { sets } = props;
   sets.sort((a, b) => a.sort_id - b.sort_id);
   const watchGroup = groupOptionByWatchId(sets);
-  console.log('watchGroup', watchGroup);
   const [state, setState] = useState({});
   const [textInput, setTextInput] = useState({});
 
   useEffect(() => {
     const initData = initSetData(sets);
     setState({
-      setsData: initData,
+      renderedOption: initData,
       formData: {},
     });
   }, [sets]);
@@ -49,7 +48,7 @@ function EbRenderForm(props) {
     return renderList;
   }
 
-  let { setsData, formData } = state;
+  let { renderedOption, formData } = state;
 
   function handleChange(result) {
     const { optionId, value } = result;
@@ -59,51 +58,47 @@ function EbRenderForm(props) {
         ? formData[optionId]
         : null;
     if (formData[optionId] !== value && value !== undefined) {
-      console.log('>> Data root: ', setsData);
-
+      let tempFormData = {
+        ...formData,
+        [optionId]: value,
+      };
       if (watchGroup[optionId]) {
-        console.log(
-          '>> Delete data: ',
-          setsData.filter(
-            (option) =>
-              watchGroup[optionId].includes(option.id) ||
-              Number(optionId) !== Number(option.id)
-          )
-        );
-
-        setsData = setsData.filter(
-          (option) =>
-            !watchGroup[optionId].includes(option.id) ||
-            Number(optionId) === Number(option.id)
-        );
-        console.log('setsData', setsData);
-
-        // setsData = setsData.filter((option) => option?.renderId !== optionId);
+        let tempRenderList = [];
+        for (let index = 0; index < renderedOption.length; index++) {
+          const element = renderedOption[index];
+          if (!watchGroup[optionId].includes(element.id)) {
+            tempRenderList.push(element);
+          } else {
+            tempFormData[element.id] = -1;
+          }
+        }
+        renderedOption = tempRenderList;
       }
       watchGroup[optionId]?.forEach((option, index) => {
-        // if (index === 0) {
-        //   console.log('Option', option);
-        //   return;
-        // }
-        const isExist = sets.find((set) => Number(set.id) === Number(option));
-        if (isExist) {
-          if (
-            checkConditions(isExist.conditions, value, optionId) &&
-            !isExist.hide_visually
-          ) {
-            if (!setsData.find((option) => option.id === isExist.id)) {
-              setsData.push({ ...isExist, renderId: optionId });
+        if (index === 0) {
+          return;
+        }
+        const isValidData = sets.find(
+          (set) => Number(set.id) === Number(option)
+        );
+        if (isValidData) {
+          const matchConditionNotHidden =
+            checkConditions(tempFormData, isValidData.conditions) &&
+            !isValidData.hide_visually;
+          if (matchConditionNotHidden) {
+            const isExistOption = renderedOption.find(
+              (option) => option.id === isValidData.id
+            );
+            if (!isExistOption) {
+              renderedOption.push({ ...isValidData, renderId: optionId });
             }
           }
         }
       });
 
       setState({
-        setsData: setsData,
-        formData: {
-          ...formData,
-          [optionId]: value,
-        },
+        renderedOption: renderedOption,
+        formData: tempFormData,
       });
 
       // functions?.forEach(async (func) => {
@@ -147,13 +142,12 @@ function EbRenderForm(props) {
   }
 
   // Hàm này sẽ check các condition của thằng con có desired_value và watch_option === với value của thằng cha đang chờ onChange hay không?
-  function checkConditions(conditions, value, watchOptionId) {
+  function checkConditions(formData, conditions) {
     let result;
-    value = Number(value);
     conditions.forEach((condition) => {
       const subCondition =
-        value === condition.desired_value &&
-        condition.watch_option === watchOptionId;
+        Number(formData[condition.watch_option]) ===
+        Number(condition.desired_value);
       result =
         condition.combination_operator === 'and'
           ? result && subCondition
@@ -162,13 +156,10 @@ function EbRenderForm(props) {
     return result;
   }
 
-  // console.log('setsData', setsData);
-  // console.log('formData', formData);
-
   return (
     <div className="render-form right">
       <h1>EbRenderForm</h1>
-      {setsData
+      {renderedOption
         ?.sort((a, b) => a.sort_id - b.sort_id)
         .map((input) => {
           const { id, type } = input;
@@ -209,7 +200,7 @@ function EbRenderForm(props) {
             case 'Dropdown':
               return (
                 <EbDropDownInput
-                  key={uuidv4()}
+                  key={['dropdowninput', input.id].join('_')}
                   name={id}
                   onSelectionChange={handleChange}
                   option={input}

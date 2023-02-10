@@ -18,15 +18,7 @@ function EbDropDownInput(props) {
     }
   };
 
-  const isChooseAnOption = () => {
-    let isChooseAnOption = true;
-    option.values.forEach((value) => {
-      if (value.selected) {
-        isChooseAnOption = false;
-      }
-    });
-    return isChooseAnOption;
-  };
+  //console.log('>> selectedOption', selectedOption);
 
   return option && !option.hide_visually ? (
     <div className="eb-option-input--wrapper">
@@ -40,13 +32,16 @@ function EbDropDownInput(props) {
         <select
           className="eb-dropdown-input--item"
           onChange={handleChange}
-          value={selectedOption || -1}
+          value={selectedOption ?? -1}
+          placeholder={'Choose an option'}
         >
-          {isChooseAnOption() && (
-            <option hidden={true} disabled="disabled" value={-1}>
-              Choose an Option
-            </option>
-          )}
+          <option
+            hidden={selectedOption === 0 || selectedOption ? true : false}
+            disabled={true}
+            value={-1}
+          >
+            Choose an Option
+          </option>
           {option.values.map((option) => {
             return (
               <option

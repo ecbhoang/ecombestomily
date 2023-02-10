@@ -12,14 +12,6 @@ function EbSwatchInput(props) {
   );
 
   useEffect(() => {
-    // if (option.id === 282) {
-    //   console.log('option --->', selected, {
-    //     optionId: option.id,
-    //     value: selected?.id,
-    //     valueObj: selected,
-    //     functions: option.functions,
-    //   });
-    // }
     if (selected) {
       onSelectionChange({
         optionId: option.id,
