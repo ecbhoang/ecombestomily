@@ -3,8 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import EbOptionLabel from './EbOptionLabel';
 
 function EbTextInput(props) {
-  const { option, onSelectionChange, value, handleSetTextInput, textInput } =
-    props;
+  const { option, onSelectionChange, value } = props;
   const [inputValue, setInputValue] = useState(value ?? '');
   const [inputCounter, setInputCounter] = useState(0);
 
@@ -25,10 +24,7 @@ function EbTextInput(props) {
     //should be in debounce mode
     if (option.max_length >= e.target.value.length) {
       setInputCounter(e.target.value.length);
-      handleSetTextInput({
-        ...textInput,
-        [option.id]: e.target.value,
-      });
+      setInputValue(e.target.value);
       if (onSelectionChange)
         onSelectionChange({
           optionId: option.id,
@@ -66,7 +62,7 @@ function EbTextInput(props) {
             id={uuid_input}
             placeholder={option.placeholder ? option.placeholder : null}
             className="eb-text-input--item"
-            value={textInput[option.id]}
+            value={inputValue}
             onChange={(e) => handleChange(e)}
           />
         )}
