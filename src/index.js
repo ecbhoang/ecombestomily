@@ -1,10 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-// import './index.css';
 import App from './App';
 import { STYLE } from './constant';
-// import reportWebVitals from './reportWebVitals';
-// import './assets/styles/global.css';
 
 class EbPersonalize extends HTMLElement {
   connectedCallback() {
