@@ -11,9 +11,10 @@ class EbPersonalize extends HTMLElement {
     // eslint-disable-next-line no-undef
     this.append(style, mountPoint);
     const dataSlug = this.getAttribute('data-slug');
+    const name = this.getAttribute('name');
     const root = ReactDOM.createRoot(mountPoint);
 
-    root.render(<App dataSlug={dataSlug} />);
+    root.render(<App name={name} dataSlug={dataSlug} />);
   }
 }
 customElements.define('eb-personalize', EbPersonalize);

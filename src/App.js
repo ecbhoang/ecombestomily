@@ -5,8 +5,8 @@ import EbCanvasController from './components/Ecombestomily/EbCanvasController';
 import EbRenderForm from './components/Ecombestomily/EbRenderForm';
 
 function App(props) {
-  const { dataSlug } = props;
-  console.log('>> dataSlug: ', dataSlug);
+  const { dataSlug, name } = props;
+  console.log('>> dataSlug: ', dataSlug, name);
   const [selectedData, setSelectedData] = useState(Object.keys(data)[2]);
 
   const setsData = useMemo(() => {
