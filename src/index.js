@@ -1,18 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+// import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
-import './assets/styles/global.css';
+import { STYLE } from './constant';
+// import reportWebVitals from './reportWebVitals';
+// import './assets/styles/global.css';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  // <React.StrictMode>
-  <App />
-  //</React.StrictMode>
-);
+class EbPersonalize extends HTMLElement {
+  connectedCallback() {
+    const mountPoint = document.createElement('div');
+    const style = document.createElement('style');
+    style.textContent = STYLE;
+    // eslint-disable-next-line no-undef
+    this.append(style, mountPoint);
+    const dataSlug = this.getAttribute('data-slug');
+    const root = ReactDOM.createRoot(mountPoint);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+    root.render(<App dataSlug={dataSlug} />);
+  }
+}
+customElements.define('eb-personalize', EbPersonalize);
