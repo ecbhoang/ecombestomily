@@ -1,57 +1,48 @@
-import { useMemo, useState } from 'react';
-import './App.css';
-import { data } from './assets/sampleData';
-import EbCanvasController from './components/Ecombestomily/EbCanvasController';
-import EbRenderForm from './components/Ecombestomily/EbRenderForm';
+/* eslint-disable no-unused-vars */
+import { useEffect, useState } from "react";
+import "./App.css";
+import Loading from "./components/common/Loading";
+import EbCanvasController from "./components/Ecombestomily/EbCanvasController";
+import EbRenderForm from "./components/Ecombestomily/EbRenderForm";
 
-function App(props) {
-  const { dataSlug, name } = props;
-  console.log('>> dataSlug: ', dataSlug, name);
-  const [selectedData, setSelectedData] = useState(Object.keys(data)[2]);
+function PersonalizationForm(props) {
+  let { personalizeId, shop, canvasContainerQuery } = props;
+  canvasContainerQuery = canvasContainerQuery ?? ".product.media";
+  const [state, setState] = useState(null);
+  const backupurl = "https://personalize-api.ecomygift.com/sh";
 
-  const setsData = useMemo(() => {
-    return data[selectedData];
-  }, [selectedData]);
-
-  function handleChangeData(event) {
-    if (event.target.value) {
-      setSelectedData(event.target.value);
+  const canvasWrapperId = "canvas-wrapper";
+  useEffect(() => {
+    if (personalizeId && shop) {
+      fetch(`${backupurl}/api/settings/unified/${personalizeId}?shop=${shop}`)
+        .then((data) => data.json())
+        .then((result) => {
+          console.log("Personalize data: ", result);
+          if (result) {
+            setState(result);
+          }
+        })
+        .catch((reason) => console.log("API Fail Reason: ", reason));
     }
-  }
+  }, [personalizeId, shop, canvasContainerQuery]);
 
   return (
-    <div className="App">
-      <div
-        className="eb-option-input--body"
-        style={{
-          paddingBottom: 30,
-          marginTop: 20,
-          borderBottom: '2px dashed gray',
-          color: 'orange',
-        }}
-      >
-        <label htmlFor="mow" className="eb-option-input--label">
-          Change data source
-        </label>
-        <select
-          id="mow"
-          className="eb-dropdown-input--item"
-          onChange={handleChangeData}
-          value={selectedData}
-        >
-          {Object.keys(data).map((k) => {
-            return (
-              <option key={k} value={k}>
-                {k}
-              </option>
-            );
-          })}
-        </select>
-      </div>
-      <EbCanvasController />
-      <EbRenderForm sets={setsData} />
+    <div className="eb-personalization-form">
+      {state ? (
+        <>
+          <EbCanvasController data={state} />
+          <EbRenderForm
+            canvasQuery={canvasContainerQuery}
+            canvasWraperId={canvasWrapperId}
+            productConfig={state.productConfig}
+            sets={state.sets[0]}
+          />
+        </>
+      ) : (
+        <Loading />
+      )}
     </div>
   );
 }
 
-export default App;
+export default PersonalizationForm;

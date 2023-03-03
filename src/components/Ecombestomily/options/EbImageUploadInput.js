@@ -1,25 +1,33 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import EbOptionLabel from './EbOptionLabel';
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import EbOptionLabel from "./EbOptionLabel";
 
 function EbImageUploadInput(props) {
-  const { option, onSelectionChange, showPreview } = props;
-  const [selectedImage, setSelectedImage] = useState(null);
+  const { option, onSelectionChange, showPreview, selected } = props;
+  const [selectedImage, setSelectedImage] = useState(selected);
+  const inputRef = useRef(null);
+  const defaultBase64Image =
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=";
 
   const handleClickSelectImage = useCallback(() => {
-    document.querySelector('.eb-input-image').click();
+    inputRef.current.click();
   }, []);
 
   useEffect(() => {
-    if (onSelectionChange) onSelectionChange(selectedImage);
-    window.engraver.setImage(1 ?? '0', selectedImage);
-  }, [selectedImage, onSelectionChange]);
+    console.log("voyenhoang1998", selectedImage);
+
+    if (onSelectionChange) {
+      onSelectionChange({
+        render: true,
+        option: option,
+        value: selectedImage ?? defaultBase64Image,
+      });
+    }
+  }, [selectedImage]);
 
   function onChangeHandler(e) {
     if (!e) {
-      const defaultBase64Image =
-        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=';
-      window.engraver.setImage(1 ?? '0', defaultBase64Image);
       setSelectedImage(null);
+      inputRef.current.value = "";
     } else {
       encodeImageFileAsURL(e.target.files[0]);
     }
@@ -32,7 +40,7 @@ function EbImageUploadInput(props) {
     };
     reader.readAsDataURL(file);
   }
-
+  console.log("selectedImageselectedImage", selectedImage);
   return !option.hide_visually ? (
     <div className="eb-option-input--wrapper">
       <EbOptionLabel
@@ -43,6 +51,7 @@ function EbImageUploadInput(props) {
 
       <div className="eb-option-input--body">
         <input
+          ref={inputRef}
           className="eb-input-image"
           type="file"
           onChange={onChangeHandler}

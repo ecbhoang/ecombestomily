@@ -1,33 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import EbOptionLabel from './EbOptionLabel';
+import React, { useState } from "react";
+import EbOptionLabel from "./EbOptionLabel";
 
 function EbTextInput(props) {
   const { option, onSelectionChange, value } = props;
-  const [inputValue, setInputValue] = useState(value ?? '');
+  const [inputValue, setInputValue] = useState(value ?? "");
   const [inputCounter, setInputCounter] = useState(0);
 
-  const uuid_input = uuidv4();
-
-  // const helpText = option.help_text
-  //   .replace('Example: ', '')
-  //   .replace('amp;', '');
-
-  useEffect(() => {
-    // window.engraver.setText(
-    //   Number(option.functions[0]?.text_id) ?? 0,
-    //   helpText
-    // );
-  }, []);
-
   const handleChange = (e) => {
-    //should be in debounce mode
     if (option.max_length >= e.target.value.length) {
       setInputCounter(e.target.value.length);
       setInputValue(e.target.value);
       if (onSelectionChange)
         onSelectionChange({
-          optionId: option.id,
+          render: true,
+          option: option,
           value: e.target.value,
           functions: option.functions,
         });
@@ -42,13 +28,13 @@ function EbTextInput(props) {
         isRequired={option.required}
         maxChar={option.max_length}
         currentChar={inputCounter}
-        uuid_input={uuid_input}
+        target_id={"text-input" + option.id}
       />
       <div className="eb-option-input--body">
         {option.is_textarea ? (
           <textarea
-            type={option.functions[0]?.type ?? 'text'}
-            id={uuid_input}
+            type={option.functions[0]?.type ?? "text"}
+            id={"text-input" + option.id}
             placeholder={option.placeholder ?? null}
             className="eb-text-input--item"
             cols={option.cols ?? 10}
@@ -58,8 +44,8 @@ function EbTextInput(props) {
           ></textarea>
         ) : (
           <input
-            type={option.functions[0]?.type ?? 'text'}
-            id={uuid_input}
+            type={option.functions[0]?.type ?? "text"}
+            id={"text-input" + option.id}
             placeholder={option.placeholder ? option.placeholder : null}
             className="eb-text-input--item"
             value={inputValue}

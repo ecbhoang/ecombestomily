@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import EbOptionLabel from './EbOptionLabel';
+import React, { useEffect, useState } from "react";
+import EbOptionLabel from "./EbOptionLabel";
 
 function EbSwatchInput(props) {
   const { option, onSelectionChange, selectedId } = props;
@@ -14,7 +14,8 @@ function EbSwatchInput(props) {
   useEffect(() => {
     if (selected) {
       onSelectionChange({
-        optionId: option.id,
+        render: true,
+        option: option,
         value: selected?.id,
         valueObj: selected,
         functions: option.functions,
@@ -27,8 +28,9 @@ function EbSwatchInput(props) {
       setSelected(item);
       if (onSelectionChange) {
         onSelectionChange({
+          render: true,
           value: item.id,
-          optionId: option.id,
+          option: option,
           valueObj: item,
           functions: option.functions,
         });
@@ -51,7 +53,7 @@ function EbSwatchInput(props) {
               key={item.id}
               onClick={() => handleClick(item)}
               className={`eb-swatch-input--option ${
-                selected?.id === item.id ? 'selected' : ''
+                selected?.id === item.id ? "selected" : ""
               }`}
             >
               {item.thumb_image ? (
@@ -60,8 +62,8 @@ function EbSwatchInput(props) {
                 <div
                   style={{
                     backgroundColor: item.bg_color,
-                    width: '100%',
-                    height: '100%',
+                    width: "100%",
+                    height: "100%",
                   }}
                 ></div>
               )}

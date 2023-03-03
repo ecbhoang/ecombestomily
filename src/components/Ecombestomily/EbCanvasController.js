@@ -1,52 +1,35 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect } from "react";
 
-function EbCanvasController() {
-  const { engraver } = window;
-  let canvasState = {};
-  // async function checkCanvasState(key, value) {
-  //   if (key) {
-  //   } else {
-  //     await engraver.setPresetImage(key, value);
-  //   }
-  // }
+function EbCanvasController(props) {
+  const { data } = props;
 
-  async function renderCanvas(data) {
-    const { optionId, funcObj, valueObj } = data;
-    canvasState = { ...canvasState, [optionId]: data };
-    console.log('canvasState', canvasState);
-    for (const key in canvasState) {
-      const item = canvasState[key];
-      switch (item.funcObj.type) {
-        case 'image': {
-          // await engraver.setPresetImage(
-          //   Number(item.funcObj.image_id),
-          //   Number(item.valueObj.image_id)
-          // );
-          break;
-        }
-        case 'text': {
-          // ebCanvas.setText(Number(func.text_id), value);
-          break;
-        }
-        case 'product': {
-          // await ebCanvas.setProduct(valueObj.product_id);
-          break;
-        }
-        default: {
-          console.log('Default type');
-          break;
-        }
-      }
-    }
+  const prepareCanvas = useCallback(() => {
+    const WRAPPER_ID = "canvas-wrapper";
+    const CANVAS_ID = "preview-canvas";
 
-    // if (canvasState[key] !== undefined) {
-    // }
-    // engraver.setPresetImage(Number(key), -1);
-    // setCanvasState({ ...canvasState, [key]: value });
-    // engraver.setPresetImage(Number(key), Number(value));
-  }
+    let canvasEl = document.createElement("canvas");
+    let canvasWraper = document.createElement("div");
 
-  window.ebCanvas = { renderCanvas: renderCanvas };
+    document.body.appendChild(canvasWraper);
+    canvasWraper.appendChild(canvasEl);
+
+    canvasEl.id = CANVAS_ID;
+    canvasWraper.id = WRAPPER_ID;
+
+    canvasWraper.className = "eb-hidden";
+
+    window.engraver.init(CANVAS_ID);
+    data.productConfig?.initial_product_id &&
+      window.engraver
+        .setProduct(data.productConfig.initial_product_id)
+        .then((result) => console.log(result));
+  }, [data.productConfig.initial_product_id]);
+
+  useEffect(() => {
+    prepareCanvas(data);
+  }, [data, prepareCanvas]);
+  async function renderCanvas(data) {}
+
   return null;
 }
 

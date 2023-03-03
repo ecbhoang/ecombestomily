@@ -53,6 +53,7 @@ code {
   font-size: 13px;
   font-weight: 700;
   margin-left: 5px;
+  margin-bottom: unset;
 }
 .eb-option-input--help_text {
   color: #353535;
@@ -61,13 +62,12 @@ code {
   text-align: left;
   width: 100%;
 }
-.eb-dropdown-input--item,
-.eb-text-input--item {
+.eb-dropdown-input--item{
   border: initial;
   border-radius: 5px;
   box-shadow: 0 0 0 1px #d5d5d5;
   font-size: 16px;
-  margin: 3px 6px;
+  margin: 3px 0px;
   min-height: 35px;
   min-width: 100px;
   padding-left: 8px;

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import EbOptionLabel from './EbOptionLabel';
+import React, { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import EbOptionLabel from "./EbOptionLabel";
 
 function EbDropDownInput(props) {
   const { option, onSelectionChange, selectedId } = props;
@@ -8,17 +8,22 @@ function EbDropDownInput(props) {
     selectedId ?? option.values.find((i) => i.selected)?.id
   );
   useEffect(() => {
-    onSelectionChange({ optionId: option.id, value: selectedOption });
+    onSelectionChange({ option: option, value: selectedOption });
   }, []);
 
   const handleChange = (e) => {
     setSelectedOption(e.target.value);
     if (onSelectionChange) {
-      onSelectionChange({ optionId: option.id, value: e.target.value });
+      let selected = option.values.find((i) => i.id == e.target.value);
+      onSelectionChange({
+        render: true,
+        option: option,
+        value: e.target.value,
+        valueObj: selected,
+        functions: option.functions,
+      });
     }
   };
-
-  //console.log('>> selectedOption', selectedOption);
 
   return option && !option.hide_visually ? (
     <div className="eb-option-input--wrapper">
@@ -33,7 +38,7 @@ function EbDropDownInput(props) {
           className="eb-dropdown-input--item"
           onChange={handleChange}
           value={selectedOption ?? -1}
-          placeholder={'Choose an option'}
+          placeholder={"Choose an option"}
         >
           <option
             hidden={selectedOption === 0 || selectedOption ? true : false}

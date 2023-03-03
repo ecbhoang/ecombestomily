@@ -1,24 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from "react";
 
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
-import EbDropDownInput from './options/EbDropDownInput';
-import EbSwatchInput from './options/EbSwatchInput';
-import EbTextInput from './options/EbTextInput';
-import './EbRenderForm.css';
-import EbImageUploadInput from './options/EbImageUploadInput';
-import EbCheckBoxInput from './options/EbCheckBoxInput';
-import { parseDataMultipleLevel } from '../../assets/scripts/helpers';
+import { parseDataMultipleLevel } from "../../assets/scripts/helpers";
+import "./EbRenderForm.css";
+import EbCheckBoxInput from "./options/EbCheckBoxInput";
+import EbDropDownInput from "./options/EbDropDownInput";
+import EbImageUploadInput from "./options/EbImageUploadInput";
+import EbSwatchInput from "./options/EbSwatchInput";
+import EbTextInput from "./options/EbTextInput";
 
 function EbRenderForm(props) {
-  // const { engraver } = window;
-  const { sets } = props;
-  sets.sort((a, b) => a.sort_id - b.sort_id);
-  const watchGroup = groupOptionByWatchId(sets);
+  const { sets, productConfig, canvasQuery, canvasWraperId } = props;
+
+  const options = useMemo(() => {
+    if (sets && sets.options) {
+      return sets.options.sort((a, b) => a.sort_id - b.sort_id);
+    } else {
+      return [];
+    }
+  }, [sets]);
+
+  const watchGroup = groupOptionByWatchId(options);
   const [state, setState] = useState({});
+  const [isCanvasInit, setIsCanvasInit] = useState(false);
+  const [initProductId, setInitProductId] = useState(false);
+  const { engraver } = window;
 
   useEffect(() => {
-    const initData = initSetData(sets);
+    const initData = initSetData(sets.options);
     setState({
       renderedOption: initData,
       formData: {},
@@ -48,16 +58,65 @@ function EbRenderForm(props) {
   }
 
   let { renderedOption, formData } = state;
-  console.log('>> renderedOption: ', renderedOption);
 
   function checkValueExistence(list1, list2) {
     return list1.some((val) => list2.includes(val));
   }
 
-  function handleChange(result) {
-    const { optionId, value } = result;
-    console.log('result', result);
+  function renderRequest(data) {
+    const { option, value, valueObj, functions } = data;
+    //[start] handle canvas renderer
+    if (!isCanvasInit) {
+      let container = document.querySelector(canvasQuery);
+      let canvas = document.getElementById(canvasWraperId);
+      if (container) {
+        container.innerHTML = "";
+        container.appendChild(canvas);
+        canvas.classList.remove("eb-hidden");
+        setIsCanvasInit(true);
+      } else {
+        console.error("[ECB-Personalization]Load canvas container fail");
+      }
+    }
 
+    const isFileUpload = "file_upload_image_id" in option;
+    if (isFileUpload) {
+      engraver.setImage(option.file_upload_image_id, value);
+    } else {
+      functions.forEach((item) => {
+        switch (item.type) {
+          case "image": {
+            engraver.setPresetImage(
+              Number(item.image_id),
+              Number(valueObj.image_id)
+            );
+            break;
+          }
+          case "text": {
+            engraver.setText(Number(item.text_id), value);
+            break;
+          }
+          case "product": {
+            engraver.setProduct(valueObj.product_id);
+            setInitProductId(true);
+            break;
+          }
+          default: {
+            console.log("Type chua bat", item.type);
+            break;
+          }
+        }
+      });
+    }
+  }
+
+  function handleChange(result) {
+    const { option, value, render } = result;
+    const optionId = option?.id;
+    // console.log(`[EB]-option changed-data(${optionId}) ==> `,option, result);
+    if (render) {
+      renderRequest(result);
+    }
     formData[optionId] =
       formData[optionId] || formData[optionId] === 0
         ? formData[optionId]
@@ -67,8 +126,6 @@ function EbRenderForm(props) {
         ...formData,
         [optionId]: value,
       };
-      console.log('>> tempFormData: ', tempFormData);
-      console.log('watchGroup', watchGroup);
       if (watchGroup[optionId]) {
         let tempRenderList = [];
         for (let index = 0; index < renderedOption.length; index++) {
@@ -76,10 +133,12 @@ function EbRenderForm(props) {
           if (!watchGroup[optionId].includes(element.id)) {
             tempRenderList.push(element);
           } else if (watchGroup[element.id]?.length > 1) {
-            let list1 = watchGroup[element.id].slice(1);
-            let list2 = watchGroup[optionId];
-            console.log('mow ', list1, list2);
-            if (!checkValueExistence(list1, list2)) {
+            if (
+              !checkValueExistence(
+                watchGroup[element.id].slice(1),
+                watchGroup[optionId]
+              )
+            ) {
               tempFormData[element.id] = -1;
             }
           }
@@ -90,7 +149,7 @@ function EbRenderForm(props) {
         if (index === 0) {
           return;
         }
-        const isValidData = sets.find(
+        const isValidData = options.find(
           (set) => Number(set.id) === Number(option)
         );
         if (isValidData) {
@@ -112,30 +171,6 @@ function EbRenderForm(props) {
         renderedOption: renderedOption,
         formData: tempFormData,
       });
-
-      // functions?.forEach(async (func) => {
-      //   switch (func.type) {
-      //     case 'image': {
-      //       await engraver.setPresetImage(
-      //         Number(func.image_id),
-      //         Number(valueObj.image_id)
-      //       );
-      //       break;
-      //     }
-      //     case 'text': {
-      //       await engraver.setText(Number(func.text_id), value);
-      //       break;
-      //     }
-      //     case 'product': {
-      //       await engraver.setProduct(valueObj.product_id);
-      //       break;
-      //     }
-      //     default: {
-      //       console.log('Default type', func.type);
-      //       break;
-      //     }
-      //   }
-      // });
     }
   }
 
@@ -164,25 +199,24 @@ function EbRenderForm(props) {
             Number(condition.desired_value);
 
       result =
-        condition.combination_operator === 'and'
+        condition.combination_operator === "and"
           ? result && subCondition
           : result || subCondition;
     });
     return result;
   }
-
   return (
-    <div className="render-form right">
-      <h1>EbRenderForm</h1>
+    <div className="render-form">
+      {/* <button type="button" onClick={testRenderCanvas}>Test canvas</button> */}
       {renderedOption
         ?.sort((a, b) => a.sort_id - b.sort_id)
         .map((input) => {
           const { id, type } = input;
           switch (type) {
-            case 'Swatch':
+            case "Swatch":
               return (
                 <EbSwatchInput
-                  key={['swatchinput', input.id].join('_')}
+                  key={["swatchinput", input.id].join("_")}
                   name={id}
                   onSelectionChange={handleChange}
                   option={input}
@@ -190,42 +224,41 @@ function EbRenderForm(props) {
                 />
               );
 
-            case 'Checkbox':
+            case "Checkbox":
               return (
                 <EbCheckBoxInput
-                  key={['checkboxinput', input.id].join('_')}
+                  key={["checkboxinput", input.id].join("_")}
                   name={id}
-                  onSelectionClick={(item) => {
-                    // console.log(item)
-                  }}
+                  onSelectionClick={(item) => {}}
                   option={input}
                 />
               );
-            case 'Text Input':
+            case "Text Input":
               return (
                 <EbTextInput
-                  key={['textinput', input.id].join('_')}
+                  key={["textinput", input.id].join("_")}
                   name={id}
-                  onSelectionChange={(item) => console.log(item)}
+                  onSelectionChange={handleChange}
                   option={input}
                 />
               );
-            case 'Dropdown':
+            case "Dropdown":
               return (
                 <EbDropDownInput
-                  key={['dropdowninput', input.id].join('_')}
+                  key={["dropdowninput", input.id].join("_")}
                   name={id}
                   onSelectionChange={handleChange}
                   option={input}
                   selectedId={formData[input.id]}
                 />
               );
-            case 'Image Upload':
+            case "Image Upload":
               return (
                 <EbImageUploadInput
-                  key={uuidv4()}
+                  key={["imageinput", input.id].join("_")}
                   name={id}
-                  onSelectionChange={(item) => console.log(item)}
+                  onSelectionChange={handleChange}
+                  selected={formData[input.id]}
                   option={input}
                   showPreview={false}
                 />
