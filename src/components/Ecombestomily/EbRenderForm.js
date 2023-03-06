@@ -11,7 +11,15 @@ import EbSwatchInput from "./options/EbSwatchInput";
 import EbTextInput from "./options/EbTextInput";
 
 function EbRenderForm(props) {
-  const { sets, productConfig, canvasQuery, canvasWraperId } = props;
+  const {
+    sets,
+    productConfig,
+    canvasQuery,
+    canvasWraperId,
+    isCanvasInit,
+    setIsCanvasInit,
+    setInitProductId,
+  } = props;
 
   const options = useMemo(() => {
     if (sets && sets.options) {
@@ -23,8 +31,6 @@ function EbRenderForm(props) {
 
   const watchGroup = groupOptionByWatchId(options);
   const [state, setState] = useState({});
-  const [isCanvasInit, setIsCanvasInit] = useState(false);
-  const [initProductId, setInitProductId] = useState(false);
   const { engraver } = window;
 
   useEffect(() => {

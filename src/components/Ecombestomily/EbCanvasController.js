@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 
 function EbCanvasController(props) {
-  const { data } = props;
+  const { data, setInitProductId } = props;
 
   const prepareCanvas = useCallback(() => {
     const WRAPPER_ID = "canvas-wrapper";
@@ -22,7 +22,9 @@ function EbCanvasController(props) {
     data.productConfig?.initial_product_id &&
       window.engraver
         .setProduct(data.productConfig.initial_product_id)
-        .then((result) => console.log(result));
+        .then((result) => {
+          setInitProductId(true);
+        });
   }, [data.productConfig.initial_product_id]);
 
   useEffect(() => {

@@ -13,8 +13,6 @@ function EbImageUploadInput(props) {
   }, []);
 
   useEffect(() => {
-    console.log("voyenhoang1998", selectedImage);
-
     if (onSelectionChange) {
       onSelectionChange({
         render: true,

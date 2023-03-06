@@ -3,12 +3,18 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import Loading from "./components/common/Loading";
 import EbCanvasController from "./components/Ecombestomily/EbCanvasController";
+import EbPreviewButton from "./components/Ecombestomily/EbPreviewButton";
 import EbRenderForm from "./components/Ecombestomily/EbRenderForm";
+import PreviewModal from "./components/Ecombestomily/PreviewModal";
 
 function PersonalizationForm(props) {
   let { personalizeId, shop, canvasContainerQuery } = props;
   canvasContainerQuery = canvasContainerQuery ?? ".product.media";
   const [state, setState] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const [isCanvasInit, setIsCanvasInit] = useState(false);
+  const [initProductId, setInitProductId] = useState(false);
+  const [previewImg, setPreviewImg] = useState(null);
   const backupurl = "https://personalize-api.ecomygift.com/sh";
 
   const canvasWrapperId = "canvas-wrapper";
@@ -25,22 +31,39 @@ function PersonalizationForm(props) {
         .catch((reason) => console.log("API Fail Reason: ", reason));
     }
   }, [personalizeId, shop, canvasContainerQuery]);
+  const onPreview = () => {
+    let img = window.engraver.canvas.toDataURL();
+    console.log(123123);
+    setPreviewImg(img);
+    setShowPreview(true);
+  };
 
   return (
-    <div className="eb-personalization-form">
+    <div id="eb-personalization-form">
       {state ? (
         <>
-          <EbCanvasController data={state} />
+          <EbCanvasController
+            data={state}
+            setIsCanvasInit={setIsCanvasInit}
+            setInitProductId={setInitProductId}
+          />
           <EbRenderForm
             canvasQuery={canvasContainerQuery}
             canvasWraperId={canvasWrapperId}
             productConfig={state.productConfig}
             sets={state.sets[0]}
+            isCanvasInit={isCanvasInit}
+            setIsCanvasInit={setIsCanvasInit}
+            setInitProductId={setInitProductId}
           />
         </>
       ) : (
         <Loading />
       )}
+      {showPreview && (
+        <PreviewModal onClose={setShowPreview} img={previewImg} />
+      )}
+      <EbPreviewButton isReady={initProductId} onClick={onPreview} />
     </div>
   );
 }

@@ -20,8 +20,10 @@ class EbPersonalize extends HTMLElement {
       <PersonalizationForm personalizeId={personalizeId} shop={shop} />
     );
     // root.render(
-    //   <App
-    //     dataSlug={"ew-people-gift-for-cat-lovers-personalized-custom-doormat"}
+    //   <PersonalizationForm
+    //     personalizeId={
+    //       "ew-people-gift-for-cat-lovers-personalized-custom-doormat"
+    //     }
     //     shop={"great-family-shop.myshopify.com"}
     //     canvasContainerQuery={".product.media"}
     //   />
