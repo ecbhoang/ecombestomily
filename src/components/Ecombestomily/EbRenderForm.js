@@ -1,7 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-import { v4 as uuidv4 } from "uuid";
-
 import { parseDataMultipleLevel } from "../../assets/scripts/helpers";
 import "./EbRenderForm.css";
 import EbCheckBoxInput from "./options/EbCheckBoxInput";
@@ -13,7 +11,6 @@ import EbTextInput from "./options/EbTextInput";
 function EbRenderForm(props) {
   const {
     sets,
-    productConfig,
     canvasQuery,
     canvasWraperId,
     isCanvasInit,
@@ -211,6 +208,7 @@ function EbRenderForm(props) {
     });
     return result;
   }
+
   return (
     <div className="render-form">
       {/* <button type="button" onClick={testRenderCanvas}>Test canvas</button> */}

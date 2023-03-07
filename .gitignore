@@ -1,3 +1,5 @@
 node_modules
 package-lock.json
 test.js
+build/bundle.eb-personalize.js
+build/personalization.js.LICENSE.txt
