@@ -20,6 +20,9 @@ jobs:
       - name: Build project
         run: npm run build:prod
 
+      - name: Print environment variables
+        run: env
+        
       - name: Print AWS credentials
         run: echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
 
