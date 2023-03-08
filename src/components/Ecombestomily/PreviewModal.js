@@ -10,7 +10,6 @@ const customStyles = {
     transform: "translate(-50%, -50%)",
   },
 };
-// Modal.setAppElement("#eb-personalization-form");
 function PreviewModal(props) {
   return (
     <Modal isOpen={true} contentLabel="Preview" style={customStyles}>
