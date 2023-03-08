@@ -1,9 +1,9 @@
 const path = require("path");
 const webpack = require("webpack");
 
-const branchName = process.env.BRANCH_NAME || "dev";
+const branchName = process.env.BRANCH_NAME || "develop";
 const filename =
-  branchName === "dev" ? "dev.personalization.js" : "stable.personalization.js";
+  branchName === "develop" ? "dev.personalization.js" : "personalization.js";
 
 module.exports = {
   entry: "./src/index.js",
