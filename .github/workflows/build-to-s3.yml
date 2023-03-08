@@ -4,7 +4,7 @@ on:
       - develop
 
 jobs:
-  build-and-deploy:
+  build-develop:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
