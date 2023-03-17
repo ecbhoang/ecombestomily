@@ -35,6 +35,7 @@ function EbDropDownInput(props) {
 
       <div className="eb-option-input--body">
         <select
+          name="properties[test]"
           className="eb-dropdown-input--item"
           onChange={handleChange}
           value={selectedOption ?? -1}

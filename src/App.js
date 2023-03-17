@@ -33,7 +33,6 @@ function PersonalizationForm(props) {
   }, [personalizeId, shop, canvasContainerQuery]);
   const onPreview = () => {
     let img = window.engraver.canvas.toDataURL();
-    console.log(123123);
     setPreviewImg(img);
     setShowPreview(true);
   };

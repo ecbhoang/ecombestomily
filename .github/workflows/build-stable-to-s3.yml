@@ -32,5 +32,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: nyc3
           SOURCE_DIR: ./build/
-          # SOURCE_DIR: ./build/personalization.js
 

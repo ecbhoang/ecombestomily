@@ -116,7 +116,7 @@ function EbRenderForm(props) {
   function handleChange(result) {
     const { option, value, render } = result;
     const optionId = option?.id;
-    // console.log(`[EB]-option changed-data(${optionId}) ==> `,option, result);
+    console.log(watchGroup[optionId]);
     if (render) {
       renderRequest(result);
     }
@@ -208,10 +208,9 @@ function EbRenderForm(props) {
     });
     return result;
   }
-
+  console.log("length", renderedOption?.length);
   return (
     <div className="render-form">
-      {/* <button type="button" onClick={testRenderCanvas}>Test canvas</button> */}
       {renderedOption
         ?.sort((a, b) => a.sort_id - b.sort_id)
         .map((input) => {
