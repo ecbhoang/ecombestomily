@@ -29,10 +29,12 @@ function EbTextInput(props) {
         maxChar={option.max_length}
         currentChar={inputCounter}
         target_id={"text-input" + option.id}
+        name={`options[${option.id}]`}
       />
       <div className="eb-option-input--body">
         {option.is_textarea ? (
           <textarea
+            name={`options[${option.id}]`}
             type={option.functions[0]?.type ?? "text"}
             id={"text-input" + option.id}
             placeholder={option.placeholder ?? null}
@@ -44,6 +46,7 @@ function EbTextInput(props) {
           ></textarea>
         ) : (
           <input
+            name={`options[${option.id}]`}
             type={option.functions[0]?.type ?? "text"}
             id={"text-input" + option.id}
             placeholder={option.placeholder ? option.placeholder : null}

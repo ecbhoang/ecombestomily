@@ -34,6 +34,7 @@ function EbCheckBoxInput(props) {
         type="checkbox"
         checked={isSelected}
         onChange={handleChange}
+        name={`options[${option.id}]`}
         className="eb-checkbox-input--item"
       />
       <div className="eb-checkbox-input--label">

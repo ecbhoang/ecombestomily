@@ -52,6 +52,7 @@ function EbImageUploadInput(props) {
           ref={inputRef}
           className="eb-input-image"
           type="file"
+          name={`options[${option.id}]`}
           onChange={onChangeHandler}
         />
         <button
