@@ -37,6 +37,18 @@ function PersonalizationForm(props) {
     setShowPreview(true);
   };
 
+  function setSetsData(newOption) {
+    let newState = { ...state };
+
+    let checkOption = newState.sets[0].options.find(
+      (i) => i.id === newOption.id
+    );
+    if (checkOption) {
+      checkOption = newOption;
+    }
+    setState(newState);
+  }
+
   return (
     <div id="eb-personalization-form">
       {state ? (
@@ -51,6 +63,7 @@ function PersonalizationForm(props) {
             canvasWraperId={canvasWrapperId}
             productConfig={state.productConfig}
             sets={state.sets[0]}
+            setSetsData={setSetsData}
             isCanvasInit={isCanvasInit}
             setIsCanvasInit={setIsCanvasInit}
             setInitProductId={setInitProductId}

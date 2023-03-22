@@ -16,6 +16,7 @@ function EbRenderForm(props) {
     isCanvasInit,
     setIsCanvasInit,
     setInitProductId,
+    setSetsData,
   } = props;
 
   const options = useMemo(() => {
@@ -114,9 +115,8 @@ function EbRenderForm(props) {
   }
 
   function handleChange(result) {
-    const { option, value, render } = result;
+    const { option, value, render, valueObj } = result;
     const optionId = option?.id;
-    console.log(watchGroup[optionId]);
     if (render) {
       renderRequest(result);
     }
@@ -125,21 +125,37 @@ function EbRenderForm(props) {
         ? formData[optionId]
         : null;
     if (formData[optionId] !== value && value !== undefined) {
-      let tempFormData = {
-        ...formData,
-        [optionId]: value,
-      };
-      if (watchGroup[optionId]) {
+      const currentWatchCheck = watchGroup[optionId];
+      // let tempFormData = Object.keys(formData).reduce(function (result, key) {
+      //   if (currentWatchCheck?.includes(key)) {
+      //     result[key] = formData[key];
+      //   }
+      //   return result;
+      // }, {});
+      // let tempFormData = {};
+      // for (const key in formData) {
+      //   if (
+      //     currentWatchCheck?.includes(String(key)) ||
+      //     currentWatchCheck?.includes(Number(key))
+      //   ) {
+      //     console.log("key", key);
+      //     const element = formData[key];
+      //     tempFormData[key] = element;
+      //   }
+      // }
+      let tempFormData = { ...formData, [optionId]: value };
+      console.log("tempForm", tempFormData);
+      if (currentWatchCheck) {
         let tempRenderList = [];
         for (let index = 0; index < renderedOption.length; index++) {
           const element = renderedOption[index];
-          if (!watchGroup[optionId].includes(element.id)) {
+          if (!currentWatchCheck.includes(element.id)) {
             tempRenderList.push(element);
           } else if (watchGroup[element.id]?.length > 1) {
             if (
               !checkValueExistence(
                 watchGroup[element.id].slice(1),
-                watchGroup[optionId]
+                currentWatchCheck
               )
             ) {
               tempFormData[element.id] = -1;
@@ -148,7 +164,7 @@ function EbRenderForm(props) {
         }
         renderedOption = tempRenderList;
       }
-      watchGroup[optionId]?.forEach((option, index) => {
+      currentWatchCheck?.forEach((option, index) => {
         if (index === 0) {
           return;
         }
@@ -169,6 +185,15 @@ function EbRenderForm(props) {
           }
         }
       });
+      console.log("result", result);
+
+      if (option.type === "Swatch" || option.type === "Dropdown") {
+        // console.log(option);
+        option.values = option.values.map((val) => {
+          return { ...val, selected: val.id === valueObj.id };
+        });
+      }
+      setSetsData(options);
 
       setState({
         renderedOption: renderedOption,
@@ -208,7 +233,6 @@ function EbRenderForm(props) {
     });
     return result;
   }
-  console.log("length", renderedOption?.length);
   return (
     <div className="render-form">
       {renderedOption

@@ -38,7 +38,6 @@ function EbImageUploadInput(props) {
     };
     reader.readAsDataURL(file);
   }
-  console.log("selectedImageselectedImage", selectedImage);
   return !option.hide_visually ? (
     <div className="eb-option-input--wrapper">
       <EbOptionLabel
