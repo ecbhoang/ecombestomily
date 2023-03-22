@@ -4,6 +4,7 @@
   border-radius: 8px;
   margin-left: auto;
   padding: 5px 15px;
+  max-width: 390px;
 }
 
 .eb-option-input--wrapper {

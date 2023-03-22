@@ -185,13 +185,16 @@ function EbRenderForm(props) {
         }
       });
 
-      if (option.type === "Swatch" || option.type === "Dropdown") {
+      if (
+        (option.type === "Swatch" || option.type === "Dropdown") &&
+        valueObj
+      ) {
         // console.log(option);
         option.values = option.values.map((val) => {
           return { ...val, selected: val.id === valueObj.id };
         });
       }
-      setSetsData(options);
+      setSetsData(option);
 
       setState({
         renderedOption: renderedOption,
