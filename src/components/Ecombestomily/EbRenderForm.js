@@ -144,7 +144,6 @@ function EbRenderForm(props) {
       //   }
       // }
       let tempFormData = { ...formData, [optionId]: value };
-      console.log("tempForm", tempFormData);
       if (currentWatchCheck) {
         let tempRenderList = [];
         for (let index = 0; index < renderedOption.length; index++) {
@@ -185,7 +184,6 @@ function EbRenderForm(props) {
           }
         }
       });
-      console.log("result", result);
 
       if (option.type === "Swatch" || option.type === "Dropdown") {
         // console.log(option);
