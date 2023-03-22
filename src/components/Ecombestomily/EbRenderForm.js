@@ -12,10 +12,12 @@ function EbRenderForm(props) {
   const {
     sets,
     canvasQuery,
-    canvasWraperId,
+    canvasWrapperId,
     isCanvasInit,
+    initProductId,
     setIsCanvasInit,
     setInitProductId,
+    initProduct,
     setSetsData,
   } = props;
 
@@ -67,13 +69,13 @@ function EbRenderForm(props) {
     return list1.some((val) => list2.includes(val));
   }
 
-  function renderRequest(data) {
+  async function renderRequest(data) {
     const { option, value, valueObj, functions } = data;
     //[start] handle canvas renderer
     if (!isCanvasInit) {
       let container = document.querySelector(canvasQuery);
-      let canvas = document.getElementById(canvasWraperId);
-      if (container) {
+      let canvas = document.getElementById(canvasWrapperId);
+      if (container && canvas) {
         container.innerHTML = "";
         container.appendChild(canvas);
         canvas.classList.remove("eb-hidden");
@@ -82,12 +84,17 @@ function EbRenderForm(props) {
         console.error("[ECB-Personalization]Load canvas container fail");
       }
     }
-
+    // if (!initProductId) {
+    //   await window.engraver.setProduct(initProduct);
+    //   setInitProductId(  true);
+    // }
     const isFileUpload = "file_upload_image_id" in option;
     if (isFileUpload) {
       engraver.setImage(option.file_upload_image_id, value);
     } else {
       functions.forEach((item) => {
+        console.log("load item", item);
+        console.log("initproductid", initProductId);
         switch (item.type) {
           case "image": {
             engraver.setPresetImage(
@@ -126,23 +133,6 @@ function EbRenderForm(props) {
         : null;
     if (formData[optionId] !== value && value !== undefined) {
       const currentWatchCheck = watchGroup[optionId];
-      // let tempFormData = Object.keys(formData).reduce(function (result, key) {
-      //   if (currentWatchCheck?.includes(key)) {
-      //     result[key] = formData[key];
-      //   }
-      //   return result;
-      // }, {});
-      // let tempFormData = {};
-      // for (const key in formData) {
-      //   if (
-      //     currentWatchCheck?.includes(String(key)) ||
-      //     currentWatchCheck?.includes(Number(key))
-      //   ) {
-      //     console.log("key", key);
-      //     const element = formData[key];
-      //     tempFormData[key] = element;
-      //   }
-      // }
       let tempFormData = { ...formData, [optionId]: value };
       if (currentWatchCheck) {
         let tempRenderList = [];

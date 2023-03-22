@@ -11,7 +11,8 @@ class EbPersonalize extends HTMLElement {
     script.src = "https://cdn.customily.com/customily.js";
     const style = document.createElement("style");
     style.textContent = STYLE;
-    this.append(script, style, mountPoint);
+    document.body.append(script);
+    this.append(style, mountPoint);
     const personalizeId = this.getAttribute("data-slug");
     const shop = this.getAttribute("data-shop");
     const root = ReactDOM.createRoot(mountPoint);

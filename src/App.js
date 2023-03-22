@@ -16,6 +16,7 @@ function PersonalizationForm(props) {
   const [initProductId, setInitProductId] = useState(false);
   const [previewImg, setPreviewImg] = useState(null);
   const backupurl = "https://personalize-api.ecomygift.com/sh";
+  const [initProduct, setInitProduct] = useState(null);
 
   const canvasWrapperId = "canvas-wrapper";
   useEffect(() => {
@@ -25,6 +26,8 @@ function PersonalizationForm(props) {
         .then((result) => {
           console.log("Personalize data: ", result);
           if (result) {
+            result.productConfig?.initial_product_id &&
+              setInitProduct(result.productConfig.initial_product_id);
             setState(result);
           }
         })
@@ -36,6 +39,7 @@ function PersonalizationForm(props) {
     setPreviewImg(img);
     setShowPreview(true);
   };
+  console.log("initProductId", initProductId);
 
   function setSetsData(newOption) {
     let newState = { ...state };
@@ -54,20 +58,24 @@ function PersonalizationForm(props) {
       {state ? (
         <>
           <EbCanvasController
-            data={state}
-            setIsCanvasInit={setIsCanvasInit}
             setInitProductId={setInitProductId}
-          />
-          <EbRenderForm
-            canvasQuery={canvasContainerQuery}
-            canvasWraperId={canvasWrapperId}
-            productConfig={state.productConfig}
-            sets={state.sets[0]}
-            setSetsData={setSetsData}
-            isCanvasInit={isCanvasInit}
+            initProduct={initProduct}
             setIsCanvasInit={setIsCanvasInit}
-            setInitProductId={setInitProductId}
           />
+          {initProductId ? (
+            <EbRenderForm
+              initProduct={initProduct}
+              canvasQuery={canvasContainerQuery}
+              canvasWrapperId={canvasWrapperId}
+              productConfig={state.productConfig}
+              sets={state.sets[0]}
+              setSetsData={setSetsData}
+              isCanvasInit={isCanvasInit}
+              initProductId={initProductId}
+              setIsCanvasInit={setIsCanvasInit}
+              setInitProductId={setInitProductId}
+            />
+          ) : null}
         </>
       ) : (
         <Loading />
