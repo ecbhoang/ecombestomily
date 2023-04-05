@@ -1,36 +1,48 @@
 import { useCallback, useEffect } from "react";
 
 function EbCanvasController(props) {
-  const { data, setInitProductId } = props;
-
   const prepareCanvas = useCallback(() => {
     const WRAPPER_ID = "canvas-wrapper";
     const CANVAS_ID = "preview-canvas";
 
-    let canvasEl = document.createElement("canvas");
-    let canvasWraper = document.createElement("div");
+    let checkCanvas = document.getElementById(CANVAS_ID);
+    if (!checkCanvas) {
+      let canvasEl = document.createElement("canvas");
+      let canvasWraper = document.createElement("div");
 
-    document.body.appendChild(canvasWraper);
-    canvasWraper.appendChild(canvasEl);
+      document.body.appendChild(canvasWraper);
+      canvasWraper.appendChild(canvasEl);
 
-    canvasEl.id = CANVAS_ID;
-    canvasWraper.id = WRAPPER_ID;
+      canvasEl.id = CANVAS_ID;
+      canvasWraper.id = WRAPPER_ID;
 
-    canvasWraper.className = "eb-hidden";
+      // canvasWraper.className = "eb-hidden";
 
-    window.engraver.init(CANVAS_ID);
-    data.productConfig?.initial_product_id &&
-      window.engraver
-        .setProduct(data.productConfig.initial_product_id)
-        .then((result) => {
-          setInitProductId(true);
+      window.engraver.init(CANVAS_ID);
+      // props.setIsCanvasInit(true);
+      if (props.initProduct) {
+        window.engraver.setProduct(props.initProduct).then((result) => {
+          // console.log(props);
+          props.setInitProductId(true);
         });
-  }, [data.productConfig.initial_product_id]);
+      }
+    } else {
+      window.engraver.init(CANVAS_ID);
+      // props.setIsCanvasInit(true);
+      if (props.initProduct) {
+        window.engraver.setProduct(props.initProduct).then((result) => {
+          // console.log(props);
+          props.setInitProductId(true);
+        });
+      }
+    }
+  }, []);
 
   useEffect(() => {
-    prepareCanvas(data);
-  }, [data, prepareCanvas]);
-  async function renderCanvas(data) {}
+    // setTimeout(() => {
+    prepareCanvas();
+    // }, 2000);
+  }, [prepareCanvas]);
 
   return null;
 }

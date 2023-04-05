@@ -3,3 +3,6 @@ package-lock.json
 test.js
 build/bundle.eb-personalize.js
 build/personalization.js.LICENSE.txt
+build/dev.personalization.js
+build/personalization.js
+test copy.js

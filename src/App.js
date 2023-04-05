@@ -16,6 +16,7 @@ function PersonalizationForm(props) {
   const [initProductId, setInitProductId] = useState(false);
   const [previewImg, setPreviewImg] = useState(null);
   const backupurl = "https://personalize-api.ecomygift.com/sh";
+  const [initProduct, setInitProduct] = useState(null);
 
   const canvasWrapperId = "canvas-wrapper";
   useEffect(() => {
@@ -25,6 +26,8 @@ function PersonalizationForm(props) {
         .then((result) => {
           console.log("Personalize data: ", result);
           if (result) {
+            result.productConfig?.initial_product_id &&
+              setInitProduct(result.productConfig.initial_product_id);
             setState(result);
           }
         })
@@ -33,30 +36,45 @@ function PersonalizationForm(props) {
   }, [personalizeId, shop, canvasContainerQuery]);
   const onPreview = () => {
     let img = window.engraver.canvas.toDataURL();
-    console.log(123123);
     setPreviewImg(img);
     setShowPreview(true);
   };
+  console.log("initProductId", initProductId);
+
+  function setSetsData(newOption) {
+    let newState = { ...state };
+
+    let checkOption = newState.sets[0].options.find(
+      (i) => i.id === newOption.id
+    );
+    if (checkOption) {
+      checkOption = newOption;
+    }
+    setState(newState);
+  }
 
   return (
     <div id="eb-personalization-form">
-      {state ? (
-        <>
-          <EbCanvasController
-            data={state}
-            setIsCanvasInit={setIsCanvasInit}
-            setInitProductId={setInitProductId}
-          />
-          <EbRenderForm
-            canvasQuery={canvasContainerQuery}
-            canvasWraperId={canvasWrapperId}
-            productConfig={state.productConfig}
-            sets={state.sets[0]}
-            isCanvasInit={isCanvasInit}
-            setIsCanvasInit={setIsCanvasInit}
-            setInitProductId={setInitProductId}
-          />
-        </>
+      {initProduct ? (
+        <EbCanvasController
+          setInitProductId={setInitProductId}
+          initProduct={initProduct}
+          setIsCanvasInit={setIsCanvasInit}
+        />
+      ) : null}
+      {initProductId && state ? (
+        <EbRenderForm
+          initProduct={initProduct}
+          canvasQuery={canvasContainerQuery}
+          canvasWrapperId={canvasWrapperId}
+          productConfig={state.productConfig}
+          sets={state.sets[0]}
+          setSetsData={setSetsData}
+          isCanvasInit={isCanvasInit}
+          initProductId={initProductId}
+          setIsCanvasInit={setIsCanvasInit}
+          setInitProductId={setInitProductId}
+        />
       ) : (
         <Loading />
       )}

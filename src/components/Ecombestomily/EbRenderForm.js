@@ -12,10 +12,12 @@ function EbRenderForm(props) {
   const {
     sets,
     canvasQuery,
-    canvasWraperId,
+    canvasWrapperId,
     isCanvasInit,
+    initProductId,
     setIsCanvasInit,
     setInitProductId,
+    setSetsData,
   } = props;
 
   const options = useMemo(() => {
@@ -66,13 +68,12 @@ function EbRenderForm(props) {
     return list1.some((val) => list2.includes(val));
   }
 
-  function renderRequest(data) {
+  async function renderRequest(data) {
     const { option, value, valueObj, functions } = data;
-    //[start] handle canvas renderer
     if (!isCanvasInit) {
       let container = document.querySelector(canvasQuery);
-      let canvas = document.getElementById(canvasWraperId);
-      if (container) {
+      let canvas = document.getElementById(canvasWrapperId);
+      if (container && canvas) {
         container.innerHTML = "";
         container.appendChild(canvas);
         canvas.classList.remove("eb-hidden");
@@ -81,12 +82,14 @@ function EbRenderForm(props) {
         console.error("[ECB-Personalization]Load canvas container fail");
       }
     }
-
+    console.log(option.id, option.label, "functionsfunctions", functions);
     const isFileUpload = "file_upload_image_id" in option;
     if (isFileUpload) {
       engraver.setImage(option.file_upload_image_id, value);
     } else {
       functions.forEach((item) => {
+        console.log("load item", item);
+        console.log("initproductid", initProductId);
         switch (item.type) {
           case "image": {
             engraver.setPresetImage(
@@ -114,9 +117,8 @@ function EbRenderForm(props) {
   }
 
   function handleChange(result) {
-    const { option, value, render } = result;
+    const { option, value, render, valueObj } = result;
     const optionId = option?.id;
-    // console.log(`[EB]-option changed-data(${optionId}) ==> `,option, result);
     if (render) {
       renderRequest(result);
     }
@@ -125,21 +127,19 @@ function EbRenderForm(props) {
         ? formData[optionId]
         : null;
     if (formData[optionId] !== value && value !== undefined) {
-      let tempFormData = {
-        ...formData,
-        [optionId]: value,
-      };
-      if (watchGroup[optionId]) {
+      const currentWatchCheck = watchGroup[optionId];
+      let tempFormData = { ...formData, [optionId]: value };
+      if (currentWatchCheck) {
         let tempRenderList = [];
         for (let index = 0; index < renderedOption.length; index++) {
           const element = renderedOption[index];
-          if (!watchGroup[optionId].includes(element.id)) {
+          if (!currentWatchCheck.includes(element.id)) {
             tempRenderList.push(element);
           } else if (watchGroup[element.id]?.length > 1) {
             if (
               !checkValueExistence(
                 watchGroup[element.id].slice(1),
-                watchGroup[optionId]
+                currentWatchCheck
               )
             ) {
               tempFormData[element.id] = -1;
@@ -148,7 +148,7 @@ function EbRenderForm(props) {
         }
         renderedOption = tempRenderList;
       }
-      watchGroup[optionId]?.forEach((option, index) => {
+      currentWatchCheck?.forEach((option, index) => {
         if (index === 0) {
           return;
         }
@@ -170,6 +170,17 @@ function EbRenderForm(props) {
         }
       });
 
+      if (
+        (option.type === "Swatch" || option.type === "Dropdown") &&
+        valueObj
+      ) {
+        // console.log(option);
+        option.values = option.values.map((val) => {
+          return { ...val, selected: val.id === valueObj.id };
+        });
+      }
+      setSetsData(option);
+
       setState({
         renderedOption: renderedOption,
         formData: tempFormData,
@@ -177,7 +188,6 @@ function EbRenderForm(props) {
     }
   }
 
-  // Hàm này sẽ tạo ra một object bao gồm props là các watch_option và value là một Set()các id option con có cái watch_option đó
   function groupOptionByWatchId(data) {
     const result = {};
     data.forEach((option) => {
@@ -191,7 +201,6 @@ function EbRenderForm(props) {
     return parseDataMultipleLevel(result);
   }
 
-  // Hàm này sẽ check các condition của thằng con có desired_value và watch_option === với value của thằng cha đang chờ onChange hay không?
   function checkConditions(formData, conditions) {
     let result;
     conditions.forEach((condition) => {
@@ -211,7 +220,6 @@ function EbRenderForm(props) {
 
   return (
     <div className="render-form">
-      {/* <button type="button" onClick={testRenderCanvas}>Test canvas</button> */}
       {renderedOption
         ?.sort((a, b) => a.sort_id - b.sort_id)
         .map((input) => {

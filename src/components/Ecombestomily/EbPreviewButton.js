@@ -9,7 +9,6 @@ function EbPreviewButton(props) {
             ? onClick
             : (e) => {
                 let img = window.engraver.canvas.toDataURL();
-                console.log(img);
               }
         }
         type="button"

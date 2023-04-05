@@ -117,7 +117,6 @@ code {
   max-width: 60px;
   min-height: 60px;
   min-width: 60px;
-  opacity: 0.6;
   overflow: hidden;
   transition: all 0.1s ease-in-out;
 }
@@ -249,4 +248,7 @@ code {
   margin-left: 6px;
 }
 
+.ReactModal__Overlay{
+  z-index:999;
+}
 `;

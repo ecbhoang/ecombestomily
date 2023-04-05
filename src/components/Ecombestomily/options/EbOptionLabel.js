@@ -5,7 +5,7 @@ function EbOptionLabel(props) {
   return label ? (
     <div className="eb-option-input--label">
       <label htmlFor={target_id} className="eb-option--left">
-        {label ? label : null}
+        {label ? id + "-" + label : null}
       </label>
       {maxChar ? (
         <p className="eb-option-input--max_length">
