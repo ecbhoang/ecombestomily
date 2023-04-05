@@ -55,28 +55,26 @@ function PersonalizationForm(props) {
 
   return (
     <div id="eb-personalization-form">
-      {state ? (
-        <>
-          <EbCanvasController
-            setInitProductId={setInitProductId}
-            initProduct={initProduct}
-            setIsCanvasInit={setIsCanvasInit}
-          />
-          {initProductId ? (
-            <EbRenderForm
-              initProduct={initProduct}
-              canvasQuery={canvasContainerQuery}
-              canvasWrapperId={canvasWrapperId}
-              productConfig={state.productConfig}
-              sets={state.sets[0]}
-              setSetsData={setSetsData}
-              isCanvasInit={isCanvasInit}
-              initProductId={initProductId}
-              setIsCanvasInit={setIsCanvasInit}
-              setInitProductId={setInitProductId}
-            />
-          ) : null}
-        </>
+      {initProduct ? (
+        <EbCanvasController
+          setInitProductId={setInitProductId}
+          initProduct={initProduct}
+          setIsCanvasInit={setIsCanvasInit}
+        />
+      ) : null}
+      {initProductId && state ? (
+        <EbRenderForm
+          initProduct={initProduct}
+          canvasQuery={canvasContainerQuery}
+          canvasWrapperId={canvasWrapperId}
+          productConfig={state.productConfig}
+          sets={state.sets[0]}
+          setSetsData={setSetsData}
+          isCanvasInit={isCanvasInit}
+          initProductId={initProductId}
+          setIsCanvasInit={setIsCanvasInit}
+          setInitProductId={setInitProductId}
+        />
       ) : (
         <Loading />
       )}

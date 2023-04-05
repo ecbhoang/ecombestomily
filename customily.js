@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 !(function (t) {
   function e(e) {
     for (var i, n, o = e[0], a = e[1], s = 0, l = []; s < o.length; s++)

@@ -13,9 +13,13 @@ const customStyles = {
 function PreviewModal(props) {
   return (
     <Modal isOpen={true} contentLabel="Preview" style={customStyles}>
-      <img src={props.img ?? null} alt="" />
-      <button onClick={() => props.onClose(false)}>Close</button>
-      <button>Add to card</button>
+      <div>
+        <img src={props.img ?? null} alt="" />
+        <div>
+          <button onClick={() => props.onClose(false)}>Close</button>
+          <button>Add to card</button>
+        </div>
+      </div>
     </Modal>
   );
 }

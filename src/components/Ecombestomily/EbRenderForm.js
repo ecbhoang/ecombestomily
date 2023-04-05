@@ -17,7 +17,6 @@ function EbRenderForm(props) {
     initProductId,
     setIsCanvasInit,
     setInitProductId,
-    initProduct,
     setSetsData,
   } = props;
 
@@ -71,7 +70,6 @@ function EbRenderForm(props) {
 
   async function renderRequest(data) {
     const { option, value, valueObj, functions } = data;
-    //[start] handle canvas renderer
     if (!isCanvasInit) {
       let container = document.querySelector(canvasQuery);
       let canvas = document.getElementById(canvasWrapperId);
@@ -84,10 +82,7 @@ function EbRenderForm(props) {
         console.error("[ECB-Personalization]Load canvas container fail");
       }
     }
-    // if (!initProductId) {
-    //   await window.engraver.setProduct(initProduct);
-    //   setInitProductId(  true);
-    // }
+    console.log(option.id, option.label, "functionsfunctions", functions);
     const isFileUpload = "file_upload_image_id" in option;
     if (isFileUpload) {
       engraver.setImage(option.file_upload_image_id, value);
@@ -193,7 +188,6 @@ function EbRenderForm(props) {
     }
   }
 
-  // Hàm này sẽ tạo ra một object bao gồm props là các watch_option và value là một Set()các id option con có cái watch_option đó
   function groupOptionByWatchId(data) {
     const result = {};
     data.forEach((option) => {
@@ -207,7 +201,6 @@ function EbRenderForm(props) {
     return parseDataMultipleLevel(result);
   }
 
-  // Hàm này sẽ check các condition của thằng con có desired_value và watch_option === với value của thằng cha đang chờ onChange hay không?
   function checkConditions(formData, conditions) {
     let result;
     conditions.forEach((condition) => {
@@ -224,6 +217,7 @@ function EbRenderForm(props) {
     });
     return result;
   }
+
   return (
     <div className="render-form">
       {renderedOption
